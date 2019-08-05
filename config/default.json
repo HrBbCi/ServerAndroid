@@ -1,15 +1,42 @@
 {
-	"server":{
-		"host":"0.0.0.0",
+	"NODE_ENV": "development",
+	"dialect": "mysql",
+	"server": {
+		"host": "0.0.0.0",
 		"port": 3000
-	}, 
-	"mysql":{
-		"host":"localhost",
-		"port":3306,
-		"database":"doanv2",
-		"user":"root",
-		"password":""
 	},
-	"salt":10,
-	"secret_key" : "secretkey"
+	"mysql": {
+		"host": "localhost",
+		"port": 3306,
+		"database": "doanv2",
+		"username": "root",
+		"NODE_ENV": "development",
+		"password": ""
+	},
+	"development": {
+		"username": "root",
+		"password": null,
+		"database": "doanv2",
+		"host": "127.0.0.1",
+		"NODE_ENV": "development",
+		"dialect": "mysql"
+	},
+	"test": {
+		"username": "root",
+		"password": null,
+		"database": "doanv2",
+		"host": "127.0.0.1",
+		"NODE_ENV": "development",
+		"dialect": "mysql"
+	},
+	"production": {
+		"username": "root",
+		"password": null,
+		"database": "doanv2",
+		"host": "127.0.0.1",
+		"NODE_ENV": "development",
+		"dialect": "mysql"
+	},
+	"salt": 10,
+	"secret_key": "secretkey"
 }
