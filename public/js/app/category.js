@@ -1,6 +1,7 @@
 $(document)
     .ready(
         function () {
+            const base_url = "http://localhost:3000/api";
             loadTable();
 
             function loadTable() {
@@ -12,7 +13,7 @@ $(document)
                     .ajax({
                         type: "GET",
                         contentType: "application/json",
-                        url: "http://localhost:3000/api/admin/category",
+                        url: base_url+"/category",
                         data: acc,
                         dataType: "json",
                         success: function (result) {
@@ -88,7 +89,7 @@ $(document)
                                                     .ajax({
                                                         type: "PUT",
                                                         contentType: "application/json",
-                                                        url: "http://localhost:3000/api/admin/category/" +
+                                                        url: base_url+"/category/" +
                                                             category.Id,
                                                         data: JSON.stringify(category),
                                                         dataType: "json",
@@ -129,7 +130,7 @@ $(document)
                                             function remove(id) {
                                                 $.ajax({
                                                     type: "DELETE",
-                                                    url: "http://localhost:3000/api/admin/category/" + id,
+                                                    url: base_url+"/category/" + id,
                                                     success: function (result) {
                                                         alert("Delete Success");
                                                         window.location.href = "./category";

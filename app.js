@@ -4,34 +4,14 @@ var app = express();
 var passport = require('passport')
 var session = require('express-session')
 var bodyParser = require('body-parser')
-// var env = require('dotenv').config({path: __dirname + '.env'});
-// var exphbs = require ('express-handlebars')
+
 //Body-Parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
-// For Passport
-
-app.use(session({
-  secret: 'keyboard cat',
-  resave: true,
-  saveUninitialized: true
-})); // session secret
-
-app.use(passport.initialize());
-
-app.use(passport.session()); // persistent login sessions
 
 app.set('trust proxy', 1) // trust first proxy
-//Models
-// var models = require("./apps/models");
-// //Sync Database
-// models.sequelize.sync().then(function () {
-//   console.log('Nice! Database looks fine')
-// }).catch(function (err) {
-//   console.log(err, "Something went wrong with the Database Update!")
-// });
 
 // For Passport
 app.use(session({
@@ -42,12 +22,6 @@ app.use(session({
     secure: true
   }
 }))
-// app.use(passport.initialize());
-// app.use(passport.session()); // persistent login sessions
-// //load passport strategies
-// //Models
-// var models = require("./apps/models");
-// var passport = require("./apps/config/passport/passport.js")(passport, models.user);
 
 app.set("views", __dirname + "/apps/views");
 app.set("view engine", "ejs"); // render dc data động cho client

@@ -5,12 +5,15 @@ function hash_password(password) {
     var saltRounds = config.get("salt");
     var salt = bcrypt.genSaltSync(saltRounds);
     var hash = bcrypt.hashSync(password, salt);
-    console.log(hash);
     return hash;
 }
 
 function compare_password(password, hash) {
-	bcrypt.compareSync(password, hash); 
+	 if(bcrypt.compareSync(password, hash)){
+         return true;
+     } else{
+         return false;
+     }
 }
 module.exports = {
     hash_password: hash_password,

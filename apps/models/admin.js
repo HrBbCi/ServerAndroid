@@ -10,25 +10,34 @@ module.exports = {
         })
     },
     checkAccount: (req, res) => {
-        let sql = 'SELECT * FROM admin where username = ? and password = ?'
-        conn.query(sql, [req.params.email, req.params.password], (err, response) => {
+        let data = req.body;
+        let sql = 'SELECT password FROM admin where username = ?'
+        conn.query(sql, [data.email], (err, response) => {
             if (err) throw err
             if (response[0] == null) {
                 res.json({
                     "response": [{
-                        "username": "null"
+                        "message": "null"
                     }]
                 });
             } else {
-                res.json({
-                    response
-                })
+                console.log(data.password,response[0].password);
+                console.log(helper.compare_password(data.password,response[0].password));
+                if(helper.compare_password(data.password,response[0].password)){
+                    res.json({
+                        "message": "success"
+                    })
+                }else{
+                    res.json({
+                        "response": [{
+                            "message": "fail"
+                        }]
+                    });
+                }
             }
-
         })
     },
-
-    store: (req, res) => {
+    save: (req, res) => {
         let data = req.body;
         let sql = 'INSERT INTO admin SET ?'
         conn.query(sql, [data], (err, response) => {

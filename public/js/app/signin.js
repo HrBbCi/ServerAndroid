@@ -6,7 +6,7 @@ $(document).ready(function () {
         $.ajax({
             type: "GET",
             contentType: "application/json",
-            url: "http://localhost:3000/api/admin/" + email + "/" + password,
+            url: "http://localhost:3000/api/admin/check" + email + "/" + password,
             dataType: "json",
             success: function (data) {
                 var username  = data.response[0].username;
