@@ -17,20 +17,16 @@ module.exports = {
                     callback(error, null);
                 } else {
                     var banner = [];
-                    var value = {
-                        id: "",
-                        urlImage: "",
-                        urlVideo: ""
-                    };
+                
                     for (var i = 0; i < resultsQuery.length; i++) {
                         banner[i] = {
                             id: parseInt(resultsQuery[i].BannerId),
                             option: 1,
                             type: 1,
                             value: {
-                                id: resultsQuery[i].Id,
-                                urlImage: resultsQuery[i].UrlImage,
-                                urlVideo: resultsQuery[i].UrlVideo
+                                valueId: resultsQuery[i].Id,
+                                valueImg: resultsQuery[i].UrlImage,
+                                valueVideo: resultsQuery[i].UrlVideo
                             }
                         };
                     }
@@ -56,9 +52,9 @@ module.exports = {
                             name: resultsQuery[i].Name,
                             type: 1,
                             value: {
-                                id: resultsQuery[i].Id,
-                                urlImage: resultsQuery[i].UrlImage,
-                                urlVideo: resultsQuery[i].UrlVideo
+                                valueId: resultsQuery[i].Id,
+                                valueImg: resultsQuery[i].UrlImage,
+                                valueVideo: resultsQuery[i].UrlVideo
                             }
                         };
                     }
@@ -87,9 +83,9 @@ module.exports = {
                             id: parseInt(resultsQuery[i].ActId),
                             name: resultsQuery[i].Name,
                             value: {
-                                id: resultsQuery[i].Id,
-                                urlImage: resultsQuery[i].UrlImage,
-                                urlVideo: resultsQuery[i].UrlVideo
+                                valueId: resultsQuery[i].Id,
+                                valueImg: resultsQuery[i].UrlImage,
+                                valueVideo: resultsQuery[i].UrlVideo
                             }
                         };
                     }
@@ -162,9 +158,9 @@ module.exports = {
                         var itemID = parseInt(item2[h]);
 
 
-                        var value2 = [];
+                        var value = [];
                         for (let j = 0; j < item2[h].length; j++) {
-                            value2[j] = {
+                            value[j] = {
                                 "valueId": resultsQuery[item2[h][j]].vuID,
                                 "valueImg": resultsQuery[item2[h][j]].vuImage,
                                 "valueVideo": resultsQuery[item2[h][j]].vuVideo
@@ -172,7 +168,7 @@ module.exports = {
                         }
                         var k = resultsQuery[itemID];
                         var abc = {
-                            product_id:k.ProductId,
+                            product_id: k.ProductId,
                             name: k.Name,
                             cover_price: parseFloat(k.Cover_price),
                             origin_price: parseFloat(k.Origin_price),
@@ -189,27 +185,27 @@ module.exports = {
                             cam: k.Camera,
                             battery: k.Battery,
                             connectivity: k.Connectivity,
-                            color:{
+                            color: {
                                 id: k.ColorId,
                                 name: k.ColorName
                             },
-                            os:{
+                            os: {
                                 id: k.OsId,
                                 name: k.OsName
                             },
-                            ram:{
+                            ram: {
                                 id: k.RamId,
                                 name: k.RamName
                             },
-                            rom:{
+                            rom: {
                                 id: k.RomId,
                                 name: k.RomName
                             },
-                            category:{
+                            category: {
                                 id: k.CategoryId,
                                 name: k.CategoryName
                             },
-                            value2
+                            value
                         };
                         k22.push(abc);
                     }
@@ -289,9 +285,9 @@ module.exports = {
                     for (let h = 0; h < item2.length; h++) {
                         var itemID = parseInt(item2[h]);
 
-                        var value2 = [];
+                        var value = [];
                         for (let j = 0; j < item2[h].length; j++) {
-                            value2[j] = {
+                            value[j] = {
                                 "valueId": resultsQuery[item2[h][j]].vuID,
                                 "valueImg": resultsQuery[item2[h][j]].vuImage,
                                 "valueVideo": resultsQuery[item2[h][j]].vuVideo
@@ -299,8 +295,8 @@ module.exports = {
                         }
                         var k = resultsQuery[itemID];
                         var abc = {
-                            product:{
-                                product_id:k.ProductId,
+                            product: {
+                                product_id: k.ProductId,
                                 name: k.Name,
                                 cover_price: parseFloat(k.Cover_price),
                                 origin_price: parseFloat(k.Origin_price),
@@ -317,27 +313,27 @@ module.exports = {
                                 cam: k.Camera,
                                 battery: k.Battery,
                                 connectivity: k.Connectivity,
-                                color:{
+                                color: {
                                     id: k.ColorId,
                                     name: k.ColorName
                                 },
-                                os:{
+                                os: {
                                     id: k.OsId,
                                     name: k.OsName
                                 },
-                                ram:{
+                                ram: {
                                     id: k.RamId,
                                     name: k.RamName
                                 },
-                                rom:{
+                                rom: {
                                     id: k.RomId,
                                     name: k.RomName
                                 },
-                                category:{
+                                category: {
                                     id: k.CategoryId,
                                     name: k.CategoryName
                                 },
-                                value2
+                                value
                             }
                         };
                         hot.push(abc);
@@ -412,9 +408,9 @@ module.exports = {
                     for (let h = 0; h < item2.length; h++) {
                         var itemID = parseInt(item2[h]);
 
-                        var value2 = [];
+                        var value = [];
                         for (let j = 0; j < item2[h].length; j++) {
-                            value2[j] = {
+                            value[j] = {
                                 "valueId": resultsQuery[item2[h][j]].vuID,
                                 "valueImg": resultsQuery[item2[h][j]].vuImage,
                                 "valueVideo": resultsQuery[item2[h][j]].vuVideo
@@ -422,8 +418,8 @@ module.exports = {
                         }
                         var k = resultsQuery[itemID];
                         var abc = {
-                            product:{
-                                product_id:k.ProductId,
+                            product: {
+                                product_id: k.ProductId,
                                 name: k.Name,
                                 cover_price: parseFloat(k.Cover_price),
                                 origin_price: parseFloat(k.Origin_price),
@@ -440,40 +436,43 @@ module.exports = {
                                 cam: k.Camera,
                                 battery: k.Battery,
                                 connectivity: k.Connectivity,
-                                color:{
+                                color: {
                                     id: k.ColorId,
                                     name: k.ColorName
                                 },
-                                os:{
+                                os: {
                                     id: k.OsId,
                                     name: k.OsName
                                 },
-                                ram:{
+                                ram: {
                                     id: k.RamId,
                                     name: k.RamName
                                 },
-                                rom:{
+                                rom: {
                                     id: k.RomId,
                                     name: k.RomName
                                 },
-                                category:{
+                                category: {
                                     id: k.CategoryId,
                                     name: k.CategoryName
                                 },
-                                value2
+                                value
                             }
                         };
                         recommend.push(abc);
                     }
-                    var final = {
-                        "banner": prevData.banner,
-                        "channel": prevData.channel,
-                        "act": prevData.act,
-                        "seckill": prevData.seckill,
-                        "hot":prevData.hot,
-                         recommend
-                    }
-                    callback(null, final);
+                    var result = {
+                        "result": {
+                            "banner": prevData.banner,
+                            "channel": prevData.channel,
+                            "act": prevData.act,
+                            "seckill": prevData.seckill,
+                            "hot": prevData.hot,
+                            recommend
+                        }
+                    };
+
+                    callback(null, result);
                 }
             })
         }

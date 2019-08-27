@@ -5,6 +5,8 @@ module.exports = function (app) {
     var customerCtrl = require('../models/customer');
     var productCtrl = require('../models/product');
     var homeCtrl = require('../models/home');
+    var newsCtrl = require('../models/news');
+    var orderCtrl = require('../models/order');
 
     var test2 = require('../models/product_model');
     // todoList Category
@@ -35,12 +37,16 @@ module.exports = function (app) {
     app.route('/api/product/:Id')
         .get(productCtrl.getProductCategory)
         .post(productCtrl.save);
-         //Product
-    // app.route('/api/test2')
-    // .get(test2.getAll)
-    // .post(test2.save);
 
     //Home
     app.route('/api/home')
         .get(homeCtrl.getHome);
+
+    //News
+    app.route('/api/news')
+        .get(newsCtrl.getNews);
+
+        //Order
+    app.route('/api/order')
+        .get(orderCtrl.getOrder);
 };
