@@ -37,10 +37,21 @@ app.use(controllers);
 
 var host = config.get("server.host");
 var port = config.get("server.port");
-app.listen(port, host, function () {
+
+var socket = require('socket.io');
+
+var server = app.listen(port, host, function () {
   console.log("Running", port);
 });
 
+let io = socket(server);
+
+io.on('connection', function (socket) {
+  socket.on('client-send-log', function (msg) {
+    io.sockets.emit('message', msg);
+    console.log(msg);
+  });
+});
 // app.use(function(req, res, next) {
 //   res.header("Access-Control-Allow-Origin", "*");
 //   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");

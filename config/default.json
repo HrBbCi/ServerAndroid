@@ -8,7 +8,7 @@
 	"mysql": {
 		"host": "localhost",
 		"port": 3306,
-		"database": "doanv1",
+		"database": "shoes",
 		"username": "root",
 		"NODE_ENV": "development",
 		"password": ""
@@ -16,7 +16,7 @@
 	"development": {
 		"username": "root",
 		"password": null,
-		"database": "doanv1",
+		"database": "shoes",
 		"host": "127.0.0.1",
 		"NODE_ENV": "development",
 		"dialect": "mysql"
@@ -24,7 +24,7 @@
 	"test": {
 		"username": "root",
 		"password": null,
-		"database": "doanv1",
+		"database": "shoes",
 		"host": "127.0.0.1",
 		"NODE_ENV": "development",
 		"dialect": "mysql"
@@ -32,7 +32,7 @@
 	"production": {
 		"username": "root",
 		"password": null,
-		"database": "doanv1",
+		"database": "shoes",
 		"host": "127.0.0.1",
 		"NODE_ENV": "development",
 		"dialect": "mysql"

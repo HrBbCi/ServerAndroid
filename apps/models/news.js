@@ -5,8 +5,8 @@ var async = require('async');
 
 module.exports = {
     getNews: (req, res) => {
-        let sqlNews = 'SELECT ns.*, fn.Firstname, fn.Lastname FROM news as ns, employee as el, fullnameemployee as fn where ' +
-            ' ns.emplID = el.Id and fn.ID = el.FullnameId';
+        let sqlNews = 'SELECT ns.*, el.fullname, el.image as avatar FROM news as ns, employee as el where ' +
+            ' ns.emplID = el.Id';
         var arrayOfFuncs = [];
         //Get Banner
         var func_1 = function (callback) {
@@ -17,7 +17,7 @@ module.exports = {
                     callback(error, null);
                 } else {
                     for (var i = 0; i < resultsQuery.length; i++) {
-                        arr[i] = resultsQuery[i].id;
+                        arr[i] = resultsQuery[i].title;
                     }
                     var element_obj = {};
                     for (var i = 0; i < arr.length; i++) {
@@ -68,13 +68,8 @@ module.exports = {
                             dateRelease: k.dateRelease,
                             image: k.image,
                             countShare: k.countShare,
-                            employee: {
-                                id: k.emplID,
-                                fullNameEmpl: {
-                                    firstname: k.Firstname,
-                                    lastname: k.Lastname
-                                }
-                            },
+                            employee: k.fullname,
+							avatar: k.avatar,
                             comment
                         };
                         news.push(abc);

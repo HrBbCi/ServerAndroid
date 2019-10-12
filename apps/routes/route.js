@@ -3,12 +3,13 @@ module.exports = function (app) {
     var categoryCtrl = require('../models/category');
     var adminCtrl = require('../models/admin');
     var customerCtrl = require('../models/customer');
+    var accCustomerCtrl = require('../models/account_customer');
     var productCtrl = require('../models/product');
     var homeCtrl = require('../models/home');
     var newsCtrl = require('../models/news');
     var orderCtrl = require('../models/order');
+    var billCtrl = require('../models/bill');
 
-    var test2 = require('../models/product_model');
     // todoList Category
     app.route('/api/category')
         .get(categoryCtrl.getAllCategory);
@@ -24,19 +25,31 @@ module.exports = function (app) {
     app.route('/api/admin/check')
         .get(adminCtrl.checkAccount);
     //Customer
+    
     app.route('/api/customer')
-        .get(customerCtrl.getAllAccount)
-        .post(customerCtrl.save);
-    app.route('/api/customer/check')
-        .post(customerCtrl.checkAccount);
+        .get(customerCtrl.getDetailCustomer);
+
+    app.route('/api/customer/:CustomerId')
+        .get(customerCtrl.getDetailCustomerById);
+
+    app.route('/api/accCustomer')
+        .get(accCustomerCtrl.getAllAccount)
+        .post(accCustomerCtrl.save);
+    app.route('/api/accCustomer/check')
+        .post(accCustomerCtrl.checkAccount);
     //Product
     app.route('/api/product')
-        .get(productCtrl.getAll)
-        .post(productCtrl.save);
-        // Sam sung
-    app.route('/api/product/:Id')
-        .get(productCtrl.getProductCategory)
-        .post(productCtrl.save);
+        .get(productCtrl.getAll);
+        // .post(productCtrl.save);
+    
+    app.route('/api/product/getPById/:Id')
+        .get(productCtrl.getProductById);
+    app.route('/api/product/getPByName/:Id')
+        .get(productCtrl.getProductByName);
+    app.route('/api/product/getColorProduct/:Id/:Size')
+        .get(productCtrl.getProductColorByIdAndSize);
+    app.route('/api/product/category/:Id')
+        .get(productCtrl.getProductCategory);
 
     //Home
     app.route('/api/home')
@@ -45,8 +58,19 @@ module.exports = function (app) {
     //News
     app.route('/api/news')
         .get(newsCtrl.getNews);
-
+       
         //Order
     app.route('/api/order')
         .get(orderCtrl.getOrder);
+    app.route('/api/order/:CustomerId')
+        .get(orderCtrl.getOrderByCusId);
+    app.route('/api/order/:CustomerId/:statusId')
+        .get(orderCtrl.getOrderByCusIdAndStId);
+
+    //Bill
+    app.route('/api/bill/:emplId')
+    .get( billCtrl.getBillByEmpl);
+
+    app.route('/api/bill')
+    .get( billCtrl.getAllBill);
 };
