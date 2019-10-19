@@ -59,21 +59,13 @@ module.exports = {
             }
         })
     },
-    detail: (req, res) => {
-        let sql = 'SELECT * FROM accountcustomer WHERE Id = ?'
-        conn.query(sql, [req.params.Username], (err, response) => {
-            if (err) throw err
-            res.json(response[0])
-        })
-    },
     update: (req, res) => {
         let data = req.body;
-        let customerId = req.params.customerId;
-        let sql = 'UPDATE accountcustomer SET ? WHERE id = ?'
-        conn.query(sql, [data, customerId], (err, response) => {
+        let sql = 'UPDATE accountcustomer SET password = ? WHERE Username = ?'
+        conn.query(sql, [helper.hash_password(data.password), data.username], (err, response) => {
             if (err) throw err
             res.json({
-                message: 'Update success!'
+                mes: 'Update success!'
             })
         })
     },
@@ -168,7 +160,6 @@ module.exports = {
 					
 				})
 			}else{
-				console.log("hello");
 				callback(null, {"mes1":"null"});
 			}
 		}

@@ -25,23 +25,27 @@ module.exports = function (app) {
     app.route('/api/admin/check')
         .get(adminCtrl.checkAccount);
     //Customer
-    
     app.route('/api/customer')
-        .get(customerCtrl.getDetailCustomer);
-
+        .get(customerCtrl.getDetailCustomer)
+        .delete(customerCtrl.removeAddress);
+        
+    app.route('/api/new/address')
+        .post(customerCtrl.saveAddress);
+    app.route('/api/update/info')
+        .put(customerCtrl.updateInfo);
     app.route('/api/customer/:CustomerId')
         .get(customerCtrl.getDetailCustomerById);
-
     app.route('/api/accCustomer')
         .get(accCustomerCtrl.getAllAccount)
         .post(accCustomerCtrl.save);
     app.route('/api/accCustomer/check')
         .post(accCustomerCtrl.checkAccount);
+    app.route('/api/changeP')
+        .put(accCustomerCtrl.update);
     //Product
     app.route('/api/product')
         .get(productCtrl.getAll);
-        // .post(productCtrl.save);
-    
+    // .post(productCtrl.save);
     app.route('/api/product/getPById/:Id')
         .get(productCtrl.getProductById);
     app.route('/api/product/getPByName/:Id')
@@ -50,34 +54,30 @@ module.exports = function (app) {
         .get(productCtrl.getProductColorByIdAndSize);
     app.route('/api/product/category/:Id')
         .get(productCtrl.getProductCategory);
-
     //Home
     app.route('/api/home')
         .get(homeCtrl.getHome);
-
     //News
     app.route('/api/news')
         .get(newsCtrl.getNews);
-       
-        //Order
+    //Order
     app.route('/api/order')
         .get(orderCtrl.getOrder);
     app.route('/api/order/:CustomerId')
         .get(orderCtrl.getOrderByCusId);
     app.route('/api/order/:CustomerId/:statusId')
         .get(orderCtrl.getOrderByCusIdAndStId);
-
     //Bill
     app.route('/api/bill/:emplId')
-    .get( billCtrl.getBillByEmpl);
-
+        .get(billCtrl.getBillByEmpl);
     app.route('/api/bill')
-    .get( billCtrl.getAllBill);
+        .get(billCtrl.getAllBill);
     app.route('/api/city')
-    .get(jsonCtrl.getCity);
+        //Local
+        .get(jsonCtrl.getCity);
     app.route('/api/city/:id/district')
-    .get(jsonCtrl.getDistrict);
-	app.route('/api/city/:id/district/:name')
-    .get(jsonCtrl.getWard);
-	
+        .get(jsonCtrl.getDistrict);
+    app.route('/api/city/:id/district/:name')
+        .get(jsonCtrl.getWard);
+
 };

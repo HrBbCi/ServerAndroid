@@ -46,10 +46,5 @@ module.exports = {
                 message: 'Delete success!'
             })
         })
-    },
-    getHash: (req, res) => {
-        res.json({
-            message: helper.hash_password("123456")
-        })
     }
 }
