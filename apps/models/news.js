@@ -64,6 +64,7 @@ module.exports = {
                         var abc = {
                             id: k.id,
                             title: k.title,
+							link:k.url,
                             description: k.description,
                             dateRelease: k.dateRelease,
                             image: k.image,

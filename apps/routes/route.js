@@ -9,7 +9,7 @@ module.exports = function (app) {
     var newsCtrl = require('../models/news');
     var orderCtrl = require('../models/order');
     var billCtrl = require('../models/bill');
-
+    var jsonCtrl = require('../models/json');
     // todoList Category
     app.route('/api/category')
         .get(categoryCtrl.getAllCategory);
@@ -73,4 +73,11 @@ module.exports = function (app) {
 
     app.route('/api/bill')
     .get( billCtrl.getAllBill);
+    app.route('/api/city')
+    .get(jsonCtrl.getCity);
+    app.route('/api/city/:id/district')
+    .get(jsonCtrl.getDistrict);
+	app.route('/api/city/:id/district/:name')
+    .get(jsonCtrl.getWard);
+	
 };
