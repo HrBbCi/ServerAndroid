@@ -70,7 +70,6 @@ module.exports = {
                     callback(error, null);
                 } else {
                     var customer = getCus1(resultsQuery);
-                    console.log(customer)
                     for (var i = 0; i < customer.length; i++) {
                         var Location = [];
                         var itemID = parseInt(customer[i]);
@@ -128,7 +127,6 @@ module.exports = {
                         customer = [];
                     } else {
                         customer = getCus1(resultsQuery);
-                        console.log(customer)
                         for (var i = 0; i < customer.length; i++) {
                             var Location = [];
                             var itemID = parseInt(customer[i]);
@@ -155,6 +153,39 @@ module.exports = {
                         }
                     }
                     callback(null, customer);
+                }
+            })
+        }
+        arrayOfFuncs.push(func_1);
+        async.waterfall(arrayOfFuncs, function (errString, finalResult) {
+            if (errString) {
+                return res.send(errString);
+            } else {
+                return res.send(finalResult);
+            }
+        });
+    },
+    findIdCusByEmail: (req, res) => {
+        let sql = "SELECT ct.Id as ctId,ct.Fullname,ct.Image FROM customer as ct " +
+            " where ct.Email = ?";
+        var arrayOfFuncs = [];
+        var func_1 = function (callback) {
+            conn.query(sql, [req.params.Email], (error, resultsQuery) => {
+                if (error) {
+                    console.log('error');
+                    callback(error, null);
+                } else {
+                    var mes = {};
+                    if (resultsQuery === null || resultsQuery.length === 0) {
+                        mes = "null";
+                    } else {
+                        mes = {
+                            'id': resultsQuery[0].ctId,
+                            'fullname': resultsQuery[0].Fullname,
+                            'img': resultsQuery[0].Image
+                        }
+                    }
+                    callback(null, mes);
                 }
             })
         }

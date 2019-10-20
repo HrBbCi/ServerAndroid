@@ -35,6 +35,8 @@ module.exports = function (app) {
         .put(customerCtrl.updateInfo);
     app.route('/api/customer/:CustomerId')
         .get(customerCtrl.getDetailCustomerById);
+    app.route('/api/customer/findId/:Email')
+        .get(customerCtrl.findIdCusByEmail);
     app.route('/api/accCustomer')
         .get(accCustomerCtrl.getAllAccount)
         .post(accCustomerCtrl.save);

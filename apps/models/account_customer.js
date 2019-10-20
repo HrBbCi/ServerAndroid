@@ -113,7 +113,6 @@ module.exports = {
 					}
 				})
 			}else{
-				console.log("{'mes1':'null'}");
 				callback(null, {"mes1":"null"});
 			}
 		}
@@ -128,7 +127,6 @@ module.exports = {
 						console.log('sqlIdCustomer');
 						callback(null, {"mes1":"null"});
 					} else {
-						console.log(response[0].Id)
 						var result = generateIdCustomer(response[0].Id);
 						var final1 = {
 							"mes1": prevData.mes1,
@@ -138,7 +136,6 @@ module.exports = {
 					}
 				})
 			}else{
-				console.log("hello");
 				callback(null, {"mes1":"null"});
 			}
 		}
@@ -173,8 +170,9 @@ module.exports = {
 		});
     },
     delete: (req, res) => {
-        let sql = 'DELETE FROM accountcustomer WHERE id = ?'
-        conn.query(sql, [req.params.customerId], (err, response) => {
+		let data = req.body;
+        let sql = 'UPDATE accountcustomer SET Enabled =  0 WHERE Username = ?'
+        conn.query(sql, [data.Username], (err, response) => {
             if (err) throw err
             res.json({
                 message: 'Delete success!'
