@@ -64,7 +64,7 @@ module.exports = {
                         var abc = {
                             id: k.id,
                             title: k.title,
-							link:k.url,
+							link:k.link,
                             description: k.description,
                             dateRelease: k.dateRelease,
                             image: k.image,
@@ -78,6 +78,46 @@ module.exports = {
                     callback(null, {
                         "news": news
                     });
+                }
+            })
+        }
+        arrayOfFuncs.push(func_1);
+
+        async.waterfall(arrayOfFuncs, function (errString, finalResult) {
+            if (errString) {
+                return res.send(errString);
+            } else {
+                return res.send(finalResult);
+            }
+        });
+    },
+    getNews2: (req, res) => {
+        let sqlNews = 'SELECT * FROM news ';
+        var arrayOfFuncs = [];
+        //Get Banner
+        var func_1 = function (callback) {
+            conn.query(sqlNews, function (error, resultsQuery, fields) {
+                if (error) {
+                    console.log('error');
+                    callback(error, null);
+                } else {
+                    var news = [];
+                    for (let h = 0; h < resultsQuery.length; h++) {
+                        var k = resultsQuery[h];
+                        var abc = {
+                            id: k.id,
+                            emplID: k.emplID,
+                            title: k.title,
+							link:k.link,
+                            description: k.description,
+                            dateRelease: k.dateRelease,
+                            image: k.image,
+                            employee: k.fullname,
+							avatar: k.avatar,
+                        };
+                        news.push(abc);
+                    }
+                    callback(null,news);
                 }
             })
         }

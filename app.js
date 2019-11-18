@@ -4,7 +4,10 @@ var app = express();
 var passport = require('passport')
 var session = require('express-session')
 var bodyParser = require('body-parser')
-
+var path, crypto;
+path = require('path');
+crypto = require('crypto');
+var multer = require('multer');
 //Body-Parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -51,6 +54,34 @@ io.on('connection', function (socket) {
     io.sockets.emit('message', msg);
     console.log(msg);
   });
+});
+
+var fs = require('fs');
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './public/images/')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)
+  }
+});
+var upload = multer({
+  storage: storage
+});
+// Post files
+app.post('/upload', upload.single('upload'), function (req, res) {
+  console.log(req.file);
+  res.redirect("/uploads/" + req.file.filename);
+  return res.status(200).end();
+});
+
+app.get('/uploads/:upload', function (req, res) {
+  file = req.params.upload;
+  var img = fs.readFileSync(__dirname + "/public/images/" + file);
+  res.writeHead(200, {
+    'Content-Type': 'image/png'
+  });
+  res.end(img, 'binary');
 });
 // app.use(function(req, res, next) {
 //   res.header("Access-Control-Allow-Origin", "*");

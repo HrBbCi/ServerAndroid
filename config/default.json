@@ -8,31 +8,31 @@
 	"mysql": {
 		"host": "localhost",
 		"port": 3306,
-		"database": "shoes",
+		"database": "shoes_test",
 		"username": "root",
 		"NODE_ENV": "development",
-		"password": ""
+		"password": "1801"
 	},
 	"development": {
 		"username": "root",
-		"password": null,
-		"database": "shoes",
+		"password": "1801",
+		"database": "shoes_test",
 		"host": "127.0.0.1",
 		"NODE_ENV": "development",
 		"dialect": "mysql"
 	},
 	"test": {
 		"username": "root",
-		"password": null,
-		"database": "shoes",
+		"password": "1801",
+		"database": "shoes_test",
 		"host": "127.0.0.1",
 		"NODE_ENV": "development",
 		"dialect": "mysql"
 	},
 	"production": {
 		"username": "root",
-		"password": null,
-		"database": "shoes",
+		"password": "1801",
+		"database": "shoes_test",
 		"host": "127.0.0.1",
 		"NODE_ENV": "development",
 		"dialect": "mysql"

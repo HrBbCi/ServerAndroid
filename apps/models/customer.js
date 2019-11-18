@@ -124,7 +124,7 @@ module.exports = {
                 } else {
                     var customer = [];
                     if (resultsQuery === null || resultsQuery.length === 0) {
-                        customer = [];
+                        customer = ["null"];
                     } else {
                         customer = getCus1(resultsQuery);
                         for (var i = 0; i < customer.length; i++) {
@@ -166,7 +166,7 @@ module.exports = {
         });
     },
     findIdCusByEmail: (req, res) => {
-        let sql = "SELECT ct.Id as ctId,ct.Fullname,ct.Image FROM customer as ct " +
+        let sql = "SELECT ct.Id as ctId,ct.Fullname,ct.Phone, ct.Image FROM customer as ct " +
             " where ct.Email = ?";
         var arrayOfFuncs = [];
         var func_1 = function (callback) {
@@ -182,7 +182,8 @@ module.exports = {
                         mes = {
                             'id': resultsQuery[0].ctId,
                             'fullname': resultsQuery[0].Fullname,
-                            'img': resultsQuery[0].Image
+                            'img': resultsQuery[0].Image,
+                            'phone': resultsQuery[0].Phone
                         }
                     }
                     callback(null, mes);
@@ -227,29 +228,29 @@ module.exports = {
     updateInfo: (req, res) => {
         let data = req.body;
         var arrayOfFuncs = [];
-        let sqlLocation = "UPDATE addresscustomer SET NumApartment = ? , Ward = ? , District = ?, City = ? WHERE CustomerId = ?";
-        var func_sql = function (callback) {
-            conn.query(sqlLocation, [data.NumApartment, data.Ward, data.District, data.City, data.CustomerId], (error, response) => {
+        let sqlCustomer = "UPDATE customer SET AccountUn = ? , Fullname = ? , Email = ? , Phone = ?, Image = ? WHERE Id = ?";
+        var func_2 = function (callback) {
+            conn.query(sqlCustomer, [data.Email, data.Fullname, data.Email, data.Phone, data.Image, data.CustomerId], (error, response) => {
                 if (error) {
-                    console.log('error');
+                    console.log('sqlCustomer');
                     callback(null, {
                         "mes": "null"
                     });
                 } else {
                     var mes = {
-                        'mes': 'ok1'
+                        'mes': 'ok'
                     };
                     callback(null, mes);
                 }
             })
         }
-        arrayOfFuncs.push(func_sql);
-        let sqlCustomer = "UPDATE customer SET Fullname = ? , Email = ? , Phone = ?, Image = ? WHERE Id = ?";
-        var func_2 = function (prevData, callback) {
+        arrayOfFuncs.push(func_2);
+        let sql1 = "UPDATE accountcustomer SET Username = ? WHERE Username = ?";
+        var func_1 = function (prevData, callback) {
             if (prevData.mes !== "null") {
-                conn.query(sqlCustomer, [data.Fullname, data.Email, data.Phone, data.Image, data.CustomerId], (error, response) => {
+                conn.query(sql1, [data.Email, data.Email], (error, response) => {
                     if (error) {
-                        console.log('sqlCustomer');
+                        console.log('sqlCccountcustomer');
                         callback(null, {
                             "mes": "null"
                         });
@@ -266,7 +267,38 @@ module.exports = {
                 });
             }
         }
-        arrayOfFuncs.push(func_2);
+        arrayOfFuncs.push(func_1);
+        async.waterfall(arrayOfFuncs, function (errString, finalResult) {
+            if (errString) {
+                return res.send(errString);
+            } else {
+                return res.send(finalResult);
+            }
+        });
+    },
+    updateAddress: (req, res) => {
+        let data = req.body;
+        var arrayOfFuncs = [];
+        let sqlLocation = "UPDATE addresscustomer SET NumApartment = ? , Ward = ? , District = ?, City = ? WHERE CustomerId = ? AND " +
+            "NumApartment = ? AND Ward = ? AND  District = ? AND City = ? ";
+        var func_sql = function (callback) {
+            conn.query(sqlLocation, [data.NumApartment, data.Ward, data.District, data.City, data.CustomerId,
+                data.NumApartmentOld, data.WardOld, data.DistrictOld, data.CityOld
+            ], (error, response) => {
+                if (error) {
+                    console.log('error');
+                    callback(null, {
+                        "mes": "null"
+                    });
+                } else {
+                    var mes = {
+                        'mes': 'ok'
+                    };
+                    callback(null, mes);
+                }
+            })
+        }
+        arrayOfFuncs.push(func_sql);
 
         async.waterfall(arrayOfFuncs, function (errString, finalResult) {
             if (errString) {

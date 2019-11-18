@@ -24,8 +24,11 @@ router.get("/product", function (req, res) {
 router.get("/notification", function (req, res) {
   res.render("admin/notification/index");
 });
+router.get("/statistical", function (req, res) {
+  res.render("admin/statistical/index");
+});
 router.get("/404", function (req, res) {
-  res.render("404");
+  res.render("error");
 });
 
 module.exports = router;
