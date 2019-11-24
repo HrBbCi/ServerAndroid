@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Product</title>
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	<link rel="stylesheet" href="/static/resources/bower_components/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/static/resources/bower_components/font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/static/resources/bower_components/Ionicons/css/ionicons.min.css">
+	<link rel="stylesheet" href="/static/resources/dist/css/AdminLTE.min.css">
+	<link rel="stylesheet" href="/static/resources/dist/css/skins/_all-skins.min.css">
+	<link rel="stylesheet" href="/static/resources/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+	<link rel="stylesheet"
+		href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+	<div class="wrapper">
+		<%- include ../mainheader %>
+		<%- include ../sidebar %>
+		<div class="content-wrapper">
+			<!-- Content Header (Page header) -->
+			<section class="content-header">
+				<label></label>
+				<ol class="breadcrumb">
+					<li><a href="/admin"><i class="fa fa-dashboard"></i>
+							Home</a></li>
+					<li class="active">Manager Product</li>
+				</ol>
+			</section>
+			<!-- Main content -->
+			<section class="content">
+				<div class="box">
+					<div class="box-body">
+						<form id="form-upload" action="/multiple-upload" enctype="multipart/form-data" method="post">
+							<table id="table_id" class="table table-striped" cellspacing="0"  style="width:950px;max-width:950px">
+								<thead></thead>
+								<tbody id="tbodyContent1">
+									<tr>
+										<td width="50px"><label>Product ID: </label></td>
+										<td ><input style="width:950px;max-width:950px" type="text" value="" id="productid" name="productid"
+												></td>
+									</tr>
+
+
+									<tr>
+										<td width="50px"><label>Choose: </label></td>
+										<td><input type="file" accept="image/gif, image/jpeg, image/png" multiple
+												value="" id="upload" name="upload"></td>
+
+									</tr>
+									<tr>
+										<td></td>
+										<td style="width:950px; max-width:950px">
+											<div class="row">
+												<div class="col-sm-12">
+													<div class="preview-images"></div>
+												</div>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td width="50px"><label>Category: </label></td>
+										<td hidden><input type="text"  style="width:950px;max-width:950px" value="1" id="idcategory" name="idcategory"
+												readonly></td>
+										<td><select id="typep" class="form-control chosen-select"  style="width:950px;max-width:950px" name="typep">
+											</select></td>
+
+									</tr>
+									<tr>
+										<td width="50px"><label>Number: </label></td>
+										<td><input type="number"  style="width:950px;max-width:950px" value="" id="number" name="number"></td>
+									</tr>
+									<tr>
+										<td width="50px"><label>Description: </label></td>
+										<td><textarea value=""  style="width:950px;max-width:950px" id="description" name="description"></textarea></td>
+									</tr>
+									<tr>
+										<td width="50px"><label>Material: </label></td>
+										<td><input type="text"  style="width:950px;max-width:950px" value="" id="Material" name="Material"></td>
+									</tr>
+									<tr>
+										<td width="50px"><label>Type: </label></td>
+										<td><input type="text" style="width:950px;max-width:950px" value="" id="Type" name="Type"></td>
+									</tr>
+									<tr>
+										<td width="50px"><label>Color: </label></td>
+										<td>
+											<label style="padding-right:10px">
+												<input type="radio" name="editList" value="1" />White
+											</label>
+
+											<label style="padding-right:10px">
+												<input type="radio" name="editList" value="2" />Red
+											</label>
+											<label style="padding-right:10px">
+												<input type="radio" name="editList" value="3" />Green
+											</label>
+											<label style="padding-right:10px">
+												<input type="radio" name="editList" value="4" />Blue
+											</label>
+											<label style="padding-right:10px">
+												<input type="radio" name="editList" value="5" />Yellow
+											</label>
+											<label style="padding-right:10px">
+												<input type="radio" name="editList" value="8" />Black
+											</label>
+											<label style="padding-right:10px">
+												<input type="radio" name="editList" value="9" />Gray
+											</label>
+										</td>
+									</tr>
+									<tr>
+										<td width="50px"><label>Size: </label></td>
+										<td>
+											<label style="padding-right:10px">
+												<input type="radio" name="sizeList" value="39" />39
+											</label>
+											<label style="padding-right:10px">
+												<input type="radio" name="sizeList" value="40" />40
+											</label>
+
+											<label style="padding-right:10px">
+												<input type="radio" name="sizeList" value="41" />41
+											</label>
+											<label style="padding-right:10px">
+												<input type="radio" name="sizeList" value="42" />42
+											</label>
+
+										</td>
+									</tr>
+									<tr>
+										<td width="50px"><label>Tittle: </label></td>
+										<td><input type="text" style="width:950px;max-width:950px" value="" id="Tittle" name="Tittle"></td>
+									</tr>
+									<tr>
+										<td width="50px"><label>CoverPrice: </label></td>
+										<td><input type="number" style="width:950px;max-width:950px" value="" id="CoverPrice" name="CoverPrice"></td>
+									</tr>
+									<tr>
+										<td width="50px"><label>OriginPrice: </label></td>
+										<td><input type="number" style="width:950px;max-width:950px" value="" id="OriginPrice" name="OriginPrice"></td>
+									</tr>
+
+
+
+								</tbody>
+							</table>
+						</form>
+
+						<div class="col-sm-12 text-right">
+							<button class="btn  btn-info btn-success" id="btnSubmit" name="btn1">
+								<i class="glyphicon glyphicon-edit"></i>Save
+							</button>
+							<button class="btn btn-warning" id="btnBack" name="btnBack">
+								<i class="glyphicon glyphicon-backward"></i>Back
+							</button>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- Main row -->
+		</div>
+	</div>
+	<%- include ../footer.ejs %>
+
+	<script src="/static/resources/bower_components/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="/static/js/spartan-multi-image-picker.min.js"></script>
+	<script src="/static/resources/bower_components/jquery-ui/jquery-ui.min.js"></script>
+
+	<script>
+		$.widget.bridge('uibutton', $.ui.button);
+	</script>
+	<script src="/static/resources/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="/static/resources/bower_components/jquery-knob/dist/jquery.knob.min.js"></script>
+	<script src="/static/resources/bower_components/moment/min/moment.min.js"></script>
+	<script src="/static/resources/bower_components/fastclick/lib/fastclick.js"></script>
+	<script src="/static/resources/dist/js/adminlte.min.js"></script>
+	<script src="/static/resources/dist/js/pages/dashboard.js"></script>
+	<script src="/static/resources/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+	<script src="/static/resources/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+	<script src="/static/resources/dist/js/demo.js"></script>
+	<script src="/static/js/app/productSave.js"></script>
+	<script src="/static/js/app/home.js"></script>
+</body>
+
+</html>

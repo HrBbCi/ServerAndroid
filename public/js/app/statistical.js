@@ -9,7 +9,7 @@ $(document)
                     .ajax({
                         type: "GET",
                         contentType: "application/json",
-                        url: base_url + "bill",
+                        url: base_url + "billv1",
                         dataType: "json",
                         success: function (result) {
                             var html = "";
@@ -23,9 +23,10 @@ $(document)
                                             (index + 1) +
                                             "</td>";
                                         html += "<td> " + item.employee + "</td>";
-                                        html += "<td> " + item.fullname + "</td>";
+                                        html += "<td> " + item.Fullname + "</td>";
                                         html += "<td> " + item.OrderId + "</td>";
                                         html += "<td> " + item.DatePayments + "</td>";
+                                        html += "<td> " + item.Total + "VND</td>";
                                         html += "<td> " + item.btTotal +  " VND </td>";
                                         html += "</tr>";
                                         index++;

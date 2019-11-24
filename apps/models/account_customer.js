@@ -59,6 +59,32 @@ module.exports = {
             }
         })
     },
+	checkEmail: (req, res) => {
+        let data = req.body;
+        let sql = 'SELECT username FROM accountcustomer where username = ?'
+        conn.query(sql, [data.email], (err, response) => {
+            if (err) {
+				throw err
+				mes = {
+					'mes':'null'
+				};
+				res.json(mes);
+			}
+            else{
+				var mes  ={};	
+				if(response == null || response.length ==0){
+					mes = {
+						'mes':'null'
+					};
+				}else{
+					mes = {
+						'mes':'ok'
+					};
+				} 
+				res.json(mes);
+			}
+        })
+    },
     update: (req, res) => {
         let data = req.body;
         let sql = 'UPDATE accountcustomer SET password = ? WHERE Username = ?'

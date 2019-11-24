@@ -13,8 +13,13 @@ module.exports = function (app) {
     var emplCtrl = require('../models/employee');
     var rwCtrl = require('../models/wirtefile');
     var testCtrl = require('../models/test');
-    app.route('/api/test')
-    .get(testCtrl.getOrder);
+    var multipleUploadController = require('../controllers/multipleUploadController');
+
+    app.route("/multiple-upload")
+        .post(multipleUploadController.multipleUpload);
+
+    app.route('/api/test/:CustomerId/:statusId')
+        .get(testCtrl.getOrderByCusIdAndStIdV2);
     // todoList Category
     app.route('/api/category')
         .get(categoryCtrl.getAllCategory);
@@ -44,12 +49,22 @@ module.exports = function (app) {
         .post(accCustomerCtrl.save);
     app.route('/api/accCustomer/check')
         .post(accCustomerCtrl.checkAccount);
+    app.route('/api/checkMail')
+        .post(accCustomerCtrl.checkEmail);
     app.route('/api/changeP')
         .put(accCustomerCtrl.update);
-    //Product
+    //Product 
     app.route('/api/product')
-        .get(productCtrl.getAll);
-    // .post(productCtrl.save);
+        .get(productCtrl.getAll)
+        .post(productCtrl.saveProduct)
+        .delete(productCtrl.deleteProduct);
+
+    app.route('/api/product/saveValue')
+        .post(productCtrl.saveValueImage);
+
+    app.route('/api/lastestId/:id')
+        .get(productCtrl.getLastestIdByName);
+
     app.route('/api/product/getPById/:Id')
         .get(productCtrl.getProductById);
     app.route('/api/product/getPByName/:Id')
@@ -65,7 +80,9 @@ module.exports = function (app) {
         .get(homeCtrl.getHome);
     //News
     app.route('/api/news')
-        .get(newsCtrl.getNews);
+        .get(newsCtrl.getNews)
+        .post(newsCtrl.saveNews)
+        .delete(newsCtrl.deleteNews);
     app.route('/api/news2')
         .get(newsCtrl.getNews2);
     //Order
@@ -77,15 +94,29 @@ module.exports = function (app) {
         .get(orderCtrl.getOrderByCusId);
     app.route('/api/order/:CustomerId/:statusId')
         .get(orderCtrl.getOrderByCusIdAndStId);
+    app.route('/api/orderv2/:CustomerId/:statusId')
+        .get(testCtrl.getOrderByCusIdAndStIdV2);
     app.route('/api/status')
         .get(orderCtrl.getAllStatus);
-    app.route('/api/orderv2')
+    app.route('/api/orderv3')
         .get(orderCtrl.getOrderV2);
+    app.route('/api/orderv2')
+        .get(orderCtrl.getOrderV3);
+    app.route('/api/order/update')
+        .put(orderCtrl.updateOrder);
+    app.route('/api/order/delete')
+        .put(orderCtrl.deleteOrder);
+
+    app.route('/api/orderf/:stId')
+        .get(orderCtrl.filterv1);
     //Bill
     app.route('/api/bill/:emplId')
         .get(billCtrl.getBillByEmpl);
     app.route('/api/bill')
-        .get(billCtrl.getAllBill);
+        .get(billCtrl.getAllBill)
+        .post(billCtrl.saveBill);
+    app.route('/api/billv1')
+        .get(billCtrl.getAllBillV1);
     app.route('/api/city')
         .get(jsonCtrl.getCity);
     app.route('/api/city/:id/district')
@@ -93,7 +124,8 @@ module.exports = function (app) {
     app.route('/api/city/:id/district/:name')
         .get(jsonCtrl.getWard);
     app.route('/api/notify')
-        .get(notiCtrl.getAll);
+        .get(notiCtrl.getAll)
+        .post(notiCtrl.saveNoti);
     app.route('/api/notify/:CustomerId')
         .get(notiCtrl.getNotiByIdCustomer);
     app.route('/api/employee')

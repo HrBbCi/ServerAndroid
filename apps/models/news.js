@@ -3,6 +3,28 @@ var db = require('../common/database.js');
 var conn = db.getConnection();
 var async = require('async');
 
+function generateIdNews(IDD) {
+    var string2 = IDD;
+    IDD = IDD.substring(2, IDD.length);
+    var id = string2.substring(0, 2);
+    var lent = IDD.length;
+    var num = parseInt(IDD) + 1;
+    var string_num = num + "";
+    var lent2 = lent - string_num.length
+    var result = id;
+    if (lent2 < 0) {
+        result += num;
+    } else if (lent2 === 0) {
+        result += num;
+    } else {
+        for (var i = 0; i < lent2; i++) {
+            result += "0";
+        }
+        result += num;
+    }
+    return result;
+}
+
 module.exports = {
     getNews: (req, res) => {
         let sqlNews = 'SELECT ns.*, el.fullname, el.image as avatar FROM news as ns, employee as el where ' +
@@ -64,13 +86,13 @@ module.exports = {
                         var abc = {
                             id: k.id,
                             title: k.title,
-							link:k.link,
+                            link: k.link,
                             description: k.description,
                             dateRelease: k.dateRelease,
                             image: k.image,
                             countShare: k.countShare,
                             employee: k.fullname,
-							avatar: k.avatar,
+                            avatar: k.avatar,
                             comment
                         };
                         news.push(abc);
@@ -108,16 +130,16 @@ module.exports = {
                             id: k.id,
                             emplID: k.emplID,
                             title: k.title,
-							link:k.link,
+                            link: k.link,
                             description: k.description,
                             dateRelease: k.dateRelease,
                             image: k.image,
                             employee: k.fullname,
-							avatar: k.avatar,
+                            avatar: k.avatar,
                         };
                         news.push(abc);
                     }
-                    callback(null,news);
+                    callback(null, news);
                 }
             })
         }
@@ -130,5 +152,93 @@ module.exports = {
                 return res.send(finalResult);
             }
         });
-    }
+    },
+    saveNews: (req, res) => {
+        let data = req.body;
+        var arrayOfFuncs = [];
+        //Get Id Customer
+        let sqlIdNew = "SELECT * FROM news ORDER BY Id DESC LIMIT 1";
+        var func_2 = function (callback) {
+            conn.query(sqlIdNew, (error, response) => {
+                if (error) {
+                    console.log('sqlIdNew');
+                    callback(null, {
+                        "result": "null"
+                    });
+                } else {
+                    if (response.length === 0 || response === null) {
+                        callback(null, {
+                            "result": "null"
+                        });
+                    } else {
+                        var result = generateIdNews(response[0].id);
+                        var final1 = {
+                            "result": result
+                        };
+                        callback(null, final1);
+                    }
+
+                }
+            })
+        }
+        arrayOfFuncs.push(func_2);
+
+        let sqlAcc = "INSERT INTO news(id,emplID,title,description,dateRelease,image,link) VALUES(?,?,?,?,?,?,?)";
+        //Save AccountCustomer
+        var func_1 = function (prevData, callback) {
+            if (prevData.result === "null") {
+                conn.query(sqlAcc, ["NS0000", data.emplID, data.title, data.description, data.dateRelease, data.image, data.link], (error, response) => {
+                    if (error) {
+                        console.log('saveNews');
+                        callback(null, {
+                            "mes": "null"
+                        });
+                    } else {
+                        var mes = {
+                            'mes': 'Insert saveNews!'
+                        };
+                        console.log(mes);
+                        callback(null, mes);
+                    }
+                })
+            } else {
+                conn.query(sqlAcc, [prevData.result, data.emplID, data.title, data.description, data.dateRelease, data.image, data.link], (error, response) => {
+                    if (error) {
+                        console.log('saveNews');
+                        callback(null, {
+                            "mes": "null"
+                        });
+                    } else {
+                        var mes = {
+                            'mes': 'Insert saveNews!'
+                        };
+                        console.log(mes);
+                        callback(null, mes);
+                    }
+                })
+            }
+
+        }
+        arrayOfFuncs.push(func_1);
+
+        async.waterfall(arrayOfFuncs, function (errString, finalResult) {
+            if (errString) {
+                return res.send(errString);
+            } else {
+                return res.send(finalResult);
+            }
+        });
+    },
+    deleteNews: (req, res) => {
+        let data = req.body;
+        let id = data.id;
+        let sql = 'DELETE FROM news WHERE id = ?'
+        console.log(id)
+        conn.query(sql, [id], (err, response) => {
+            if (err) throw err
+            res.json({
+                message: 'Delete success!'
+            })
+        })
+    },
 }

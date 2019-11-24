@@ -15,11 +15,17 @@ router.get("/order", function (req, res) {
 router.get("/news", function (req, res) {
   res.render("admin/post/index");
 });
+router.get("/news/save", function (req, res) {
+  res.render("admin/post/add");
+});
 router.get("/category", function (req, res) {
   res.render("admin/category/index");
 });
 router.get("/product", function (req, res) {
   res.render("admin/product/index");
+});
+router.get("/product/save", function (req, res) {
+  res.render("admin/product/add");
 });
 router.get("/notification", function (req, res) {
   res.render("admin/notification/index");

@@ -3,12 +3,13 @@ var db = require('../common/database.js');
 var conn = db.getConnection();
 var async = require('async');
 
-function generateIdOrder(string) {
-    var string2 = string;
-    string = string.substring(2, string.length);
+function generateIdOrder(IDD) {
+    console.log(IDD);
+    var string2 = IDD;
+    IDD = IDD.substring(2, IDD.length);
     var id = string2.substring(0, 2);
-    var lent = string.length;
-    var num = parseInt(string) + 1;
+    var lent = IDD.length;
+    var num = parseInt(IDD) + 1;
     var string_num = num + "";
     var lent2 = lent - string_num.length
     var result = id;
@@ -978,7 +979,7 @@ module.exports = {
         var arrayOfFuncs = [];
 
         //Get Id Customer
-        let sqlIdOrder = "SELECT * FROM shoes.order ORDER BY ID DESC LIMIT 1";
+        let sqlIdOrder = "SELECT * FROM shoes_test.order ORDER BY Id DESC LIMIT 1";
         var func_2 = function (callback) {
             conn.query(sqlIdOrder, (error, response) => {
                 if (error) {
@@ -987,21 +988,28 @@ module.exports = {
                         "mes": "null"
                     });
                 } else {
-                    var result = generateIdOrder(response[0].Id);
-                    var final1 = {
-                        "result": result
-                    };
-                    callback(null, final1);
+                    if (response.length === 0 || response === null) {
+                        callback(null, {
+                            "mes": "null"
+                        });
+                    } else {
+                        var result = generateIdOrder(response[0].Id);
+                        var final1 = {
+                            "mes": result
+                        };
+                        callback(null, final1);
+                    }
+
                 }
             })
         }
         arrayOfFuncs.push(func_2);
 
-        let sql = 'INSERT INTO shoes.order(Id,CustomerId,ShippingId,CartId,StatusId,PaymentMethodId,ProductId,Number,Discount,DateOrder,DatePayment,TypeOrder) ' +
+        let sql = 'INSERT INTO shoes_test.order(Id,CustomerId,ShippingId,CartId,StatusId,PaymentMethodId,ProductId,Number,Discount,DateOrder,DatePayment,TypeOrder) ' +
             ' VALUES(?,?,?,?,?,?,?,?,?,?,?,?)';
         var func_sql = function (prevData, callback) {
             if (prevData.mes !== "null") {
-                conn.query(sql, [prevData.result, data.CustomerId, data.ShippingId, '1', '1', data.PaymentMethodId, data.ProductId, data.Number,'0', data.DateOrder, 'null', 'app'],
+                conn.query(sql, [prevData.mes, data.CustomerId, data.ShippingId, '1', '1', data.PaymentMethodId, data.ProductId, data.Number, '0', data.DateOrder, 'null', 'app'],
                     (error, response) => {
                         if (error) {
                             console.log('error' + error);
@@ -1014,9 +1022,18 @@ module.exports = {
                         }
                     })
             } else {
-                callback(null, {
-                    "mes1": "null"
-                });
+                conn.query(sql, ["OD0000", data.CustomerId, data.ShippingId, '1', '1', data.PaymentMethodId, data.ProductId, data.Number, '0', data.DateOrder, 'null', 'app'],
+                    (error, response) => {
+                        if (error) {
+                            console.log('error' + error);
+                            callback(error, null);
+                        } else {
+                            var mes = {
+                                'mes': 'ok'
+                            };
+                            callback(null, mes);
+                        }
+                    })
             }
 
         }
@@ -1037,10 +1054,10 @@ module.exports = {
         })
     },
     getOrderV2: (req, res) => {
-        let sqlOrder = "SELECT od.Id, od.CustomerId, sp.priceShiping, sp.region, st.status, pm.Name as payment, od.ProductId, od.Number, "+
-        " od.Discount, od.DateOrder,od.DatePayment,od.TypeOrder " +
-        " FROM shoes_test.order as od, shipping as sp, shoes_test.status as st, paymentmethod as pm "+
-        " where sp.id = od.ShippingId and od.StatusId = st.Id and pm.id = od.PaymentMethodId ";
+        let sqlOrder = "SELECT od.Id, od.CustomerId, sp.priceShiping, sp.region, st.Id as stId, st.status, pm.Name as payment, od.ProductId, od.Number, " +
+            " od.Discount, od.DateOrder,od.DatePayment,od.TypeOrder " +
+            " FROM shoes_test.order as od, shipping as sp, shoes_test.status as st, paymentmethod as pm " +
+            " where sp.id = od.ShippingId and od.StatusId = st.Id and pm.id = od.PaymentMethodId ";
         var arrayOfFuncs = [];
         //Get Banner
         var func_1 = function (callback) {
@@ -1057,7 +1074,7 @@ module.exports = {
                         var item2 = getProduct5(resultsQuery);
                         for (let index = 0; index < item2.length; index++) {
                             var element = item2[index];
-                            
+
                             var product = [];
                             for (let i = 0; i < element.length; i++) {
                                 var element1 = item2[index][i];
@@ -1069,18 +1086,202 @@ module.exports = {
                                 "region": resultsQuery[element[0]].region,
                                 "shippingId": resultsQuery[element[0]].ShippingId,
                                 "status": resultsQuery[element[0]].status,
+                                "statusId": resultsQuery[element[0]].stId,
                                 "payment": resultsQuery[element[0]].payment,
-                                "Number": resultsQuery[element[0]].Number,
-                                "Discount": resultsQuery[element[0]].Discount,
                                 "DateOrder": resultsQuery[element[0]].DateOrder,
                                 "DatePayment": resultsQuery[element[0]].DatePayment,
                                 "TypeOrder": resultsQuery[element[0]].TypeOrder,
-                                 product
+                                product
                             };
                             orders.push(abc);
                         }
                     }
 
+                    callback(null, orders);
+                }
+            })
+        }
+        arrayOfFuncs.push(func_1);
+
+        async.waterfall(arrayOfFuncs, function (errString, finalResult) {
+            if (errString) {
+                return res.send(errString);
+            } else {
+                return res.send(finalResult);
+            }
+        });
+    },
+    getOrderV3: (req, res) => {
+        let sqlOrder = "SELECT od.Id, od.CustomerId, sp.priceShiping, sp.region, st.Id as stId, st.status, pm.Name as payment, od.ProductId, od.Number, " +
+            " od.Discount, od.DateOrder,od.DatePayment,od.TypeOrder " +
+            " FROM shoes_test.order as od, shipping as sp, shoes_test.status as st, paymentmethod as pm " +
+            " where sp.id = od.ShippingId and od.StatusId = st.Id and pm.id = od.PaymentMethodId ";
+        var arrayOfFuncs = [];
+        //Get Banner
+        var func_1 = function (callback) {
+
+            conn.query(sqlOrder, function (error, resultsQuery, fields) {
+                if (error) {
+                    console.log('error');
+                    callback(error, null);
+                } else {
+                    var orders = [];
+                    if (resultsQuery.length === 0 || resultsQuery === null) {
+                        orders = [];
+                    } else {
+
+                        for (let index = 0; index < resultsQuery.length; index++) {
+                            var element = resultsQuery[index];
+
+                            var abc = {
+                                "id": element.Id,
+                                "customerId": element.CustomerId,
+                                "region": element.region,
+                                "shippingId": element.ShippingId,
+                                "status": element.status,
+                                "statusId": element.stId,
+                                "payment": element.payment,
+                                "DateOrder": element.DateOrder,
+                                "DatePayment": element.DatePayment,
+                                "TypeOrder": element.TypeOrder,
+                                "Product": element.ProductId,
+                                "Number": element.Number
+                            };
+                            orders.push(abc);
+                        }
+                    }
+
+                    callback(null, orders);
+                }
+            })
+        }
+        arrayOfFuncs.push(func_1);
+
+        async.waterfall(arrayOfFuncs, function (errString, finalResult) {
+            if (errString) {
+                return res.send(errString);
+            } else {
+                return res.send(finalResult);
+            }
+        });
+    },
+    updateOrder: (req, res) => {
+        let data = req.body;
+        let id = data.id;
+        let StatusId = data.StatusId;
+        let ProductId = data.ProductId;
+        let DatePayment = data.DatePayment;
+        let sql = 'UPDATE shoes_test.order SET StatusId = ?, DatePayment = ? WHERE Id = ? AND ProductId = ?'
+        conn.query(sql, [StatusId, DatePayment, id, ProductId], (err, response) => {
+            if (err) {
+                console.log(err)
+                throw err
+            }
+            res.json({
+                message: 'Update success!'
+            })
+        })
+    },
+    deleteOrder: (req, res) => {
+        let data = req.body;
+        let id = data.id;
+        let ProductId = data.ProductId;
+        let sql = 'DELETE FROM shoes_test.order WHERE id = ? AND ProductId = ?';
+        conn.query(sql, [id,ProductId], (err, response) => {
+            if (err) throw err
+            res.json({
+                message: 'Delete success!'
+            })
+        })
+    },
+    filterv1: (req, res) => {
+        let sqlOrderv1 = "SELECT od.Id, od.CustomerId, sp.priceShiping, sp.region, st.Id as stId, st.status, pm.Name as payment, od.ProductId, od.Number, " +
+            " od.Discount, od.DateOrder,od.DatePayment,od.TypeOrder " +
+            " FROM shoes_test.order as od, shipping as sp, shoes_test.status as st, paymentmethod as pm " +
+            " where sp.id = od.ShippingId and od.StatusId = st.Id and pm.id = od.PaymentMethodId and st.Id = " + req.params.stId;
+
+        var arrayOfFuncs = [];
+        //Get Banner
+        var func_1 = function (callback) {
+
+            conn.query(sqlOrderv1, function (error, resultsQuery, fields) {
+                if (error) {
+                    console.log('error');
+                    callback(error, null);
+                } else {
+                    var orders = [];
+                    if (resultsQuery.length === 0 || resultsQuery === null) {
+                        orders = [];
+                    } else {
+
+                        for (let index = 0; index < resultsQuery.length; index++) {
+                            var element = resultsQuery[index];
+
+                            var abc = {
+                                "id": element.Id,
+                                "customerId": element.CustomerId,
+                                "region": element.region,
+                                "shippingId": element.ShippingId,
+                                "status": element.status,
+                                "statusId": element.stId,
+                                "payment": element.payment,
+                                "DateOrder": element.DateOrder,
+                                "DatePayment": element.DatePayment,
+                                "TypeOrder": element.TypeOrder,
+                                "Product": element.ProductId,
+                                "Number": element.Number
+                            };
+                            orders.push(abc);
+                        }
+                    }
+
+                    callback(null, orders);
+                }
+            })
+        }
+        arrayOfFuncs.push(func_1);
+
+        async.waterfall(arrayOfFuncs, function (errString, finalResult) {
+            if (errString) {
+                return res.send(errString);
+            } else {
+                return res.send(finalResult);
+            }
+        });
+    },
+    getOrderByCusIdAndStIdV2: (req, res) => {
+        let sqlOrder = "SELECT *  FROM `order` where CustomerId = ? and StatusId = ?";
+        var arrayOfFuncs = [];
+        //Get Banner
+        var func_1 = function (callback) {
+
+            conn.query(sqlOrder, [req.params.CustomerId, req.params.statusId], function (error, resultsQuery, fields) {
+                if (error) {
+                    console.log('error');
+                    callback(error, null);
+                } else {
+                    var orders = [];
+                    if (resultsQuery.length === 0 || resultsQuery === null) {
+                        orders = [];
+                    } else {
+                        for (let index = 0; index < resultsQuery.length; index++) {
+                            const k = resultsQuery[index];
+                            var abc = {
+                                "id": k.Id,
+                                "customerId": k.CustomerId,
+                                "shippingId": k.ShippingId,
+                                "statusId": k.StatusId,
+                                "paymentMethodId": k.PaymentMethodId,
+                                "ProductId": k.ProductId,
+                                "number": k.Number,
+                                "dateOrder": k.DateOrder,
+                                "datePayment": k.DatePayment,
+                                "typeOrder": k.TypeOrder,
+                            };
+                            orders.push(abc);
+                        }
+
+                    }
                     callback(null, orders);
                 }
             })

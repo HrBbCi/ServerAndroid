@@ -117,7 +117,7 @@ $(document)
 
                                             $('#btnDelete' + item.Id).click(function (event) {
                                                 event.preventDefault();
-                                                var x = confirm("Are you sure you want to delete?");
+                                                var x = confirm("Are you sure that you want to delete?");
                                                 if (x) {
                                                     remove(item.Id);
                                                 } else {

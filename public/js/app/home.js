@@ -9,7 +9,6 @@ $(document).ready(function () {
             url: base_url + "read",
             dataType: "json",
             success: function (result) {
-                console.log(result);
                 var res = result.data.split(";");
                 $("#avatar_1").attr("src",base_url_image + res[3]);
                 $("#avatar_2").attr("src",base_url_image + res[3]);
