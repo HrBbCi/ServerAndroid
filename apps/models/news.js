@@ -153,6 +153,46 @@ module.exports = {
             }
         });
     },
+	getNewsById: (req, res) => {
+        let sqlNews = 'SELECT * FROM news where id = ?';
+        var arrayOfFuncs = [];
+        //Get Banner
+        var func_1 = function (callback) {
+            conn.query(sqlNews, [req.params.id],function (error, resultsQuery, fields) {
+                if (error) {
+                    console.log('error');
+                    callback(error, null);
+                } else {
+                    var news = [];
+                    for (let h = 0; h < resultsQuery.length; h++) {
+                        var k = resultsQuery[h];
+                        var abc = {
+                            id: k.id,
+                            emplID: k.emplID,
+                            title: k.title,
+                            link: k.link,
+                            description: k.description,
+                            dateRelease: k.dateRelease,
+                            image: k.image,
+                            employee: k.fullname,
+                            avatar: k.avatar,
+                        };
+                        news.push(abc);
+                    }
+                    callback(null, news);
+                }
+            })
+        }
+        arrayOfFuncs.push(func_1);
+
+        async.waterfall(arrayOfFuncs, function (errString, finalResult) {
+            if (errString) {
+                return res.send(errString);
+            } else {
+                return res.send(finalResult);
+            }
+        });
+    },
     saveNews: (req, res) => {
         let data = req.body;
         var arrayOfFuncs = [];
@@ -221,6 +261,43 @@ module.exports = {
         }
         arrayOfFuncs.push(func_1);
 
+        async.waterfall(arrayOfFuncs, function (errString, finalResult) {
+            if (errString) {
+                return res.send(errString);
+            } else {
+                return res.send(finalResult);
+            }
+        });
+    },
+	updateNews: (req, res) => {
+        let data = req.body;
+        var arrayOfFuncs = [];
+        //Get Id Customer
+        let sqlUpdateNew = "UPDATE news SET emplID = ?, title = ?, description = ?, image =?, link = ? WHERE id = ? ";
+        var func_2 = function (callback) {
+            conn.query(sqlUpdateNew,[data.emplID,data.title,data.description,data.image,data.link,data.id], (error, response) => {
+                if (error) {
+                    console.log('sqlUpdateNew');
+                    callback(null, {
+                        "result": "null"
+                    });
+                } else {
+                    if (response.length === 0 || response === null) {
+                        callback(null, {
+                            "result": "null"
+                        });
+                    } else {                   
+                        var final1 = {
+                            "result": 'ok'
+                        };
+                        callback(null, final1);
+                    }
+
+                }
+            })
+        }
+        arrayOfFuncs.push(func_2);
+    
         async.waterfall(arrayOfFuncs, function (errString, finalResult) {
             if (errString) {
                 return res.send(errString);

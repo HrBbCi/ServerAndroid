@@ -38,7 +38,11 @@ $(document)
                                             '" class = "btn btn-danger"><i class = "glyphicon glyphicon-trash"></i>Delete</button>';
                                         html += "<script>";
                                         $(document).ready(function () {
-                                            $('body').on('click','#btnDelete_' + item.id, function (event) {
+                                            $('body').on('click','#btnEdit_' + item.id, function (event) {
+                                                event.preventDefault();
+                                                window.location.href = "./news/edit/"+item.id;
+                                            });
+											$('body').on('click','#btnDelete_' + item.id, function (event) {
                                                 event.preventDefault();
                                                 var x = confirm("Are you sure that you want to delete?");
                                                 if (x) {

@@ -1,163 +1,269 @@
-$(document).ready(function() {
-	
-	$('#btnSubmit').click(function(event) {
+$(document).ready(function () {
+	const base_url = "http://localhost:3000/api/";
+	$('#btnSubmit').click(function (event) {
 		event.preventDefault();
-		var idImg = $("#imageid").val();
-		var IdP = $("#productid").val();
-		var name = $("#typep").val();
-		var form = $('#fileUploadForm')[0];
-		var data = new FormData(form);
+		if (validate()) {
+			var file = $('#form-upload')[0];
+			var data = new FormData(file);
+			var fileList = document.getElementById("upload").files;
+			var sizeImage = $("#listImg > img").length;
+						
+			if(file ===  null || data === null || fileList === null || fileList.length === 0){
+				//Ko cần update ảnh
+				//Update Product
+				var i = $('#typep option:selected').index();
+				console.log(i + 1);
+				//Radio
+				var colorValue = $("input[name='editList']:checked").val();
+				var sizeValue = $("input[name='sizeList']:checked").val();
+
+				var dataProduct = {
+					ProductId: $('#productid').val(),
+					Figure: $('#number').val(),
+					Description: $('#description').val(),
+					Material: $('#Material').val(),
+					Type: $('#Type').val(),
+					ColorId: colorValue,
+					Size: sizeValue,
+					Tittle: $('#Tittle').val(),
+					CoverPrice: $('#CoverPrice').val(),
+					OriginPrice: $('#OriginPrice').val(),
+					ColorId_old:  $('#color_old').val(),
+					Size_old: $('#size_old').val(),
+					Title_old: $('#title_old').val()
+				};
+				updateProduct(dataProduct);
+			}else{
+				//Delete ảnh cũ
+				deleteValue($('#productid').val());
+				
+				//Insert Ảnh mới
+				//Up to server
+				$.ajax({
+					type: "POST",
+					enctype: 'multipart/form-data',
+					url: "http://localhost:3000/multiple-upload",
+					data: data,
+					processData: false,
+					contentType: false,
+					cache: false,
+					timeout: 1000000,
+					success: function (result) {
+						console.log("Save done");
+					},
+					error: function (event) {
+						console.log("Save Fail" + event);
+					}
+				});
+
+				var dataImage = [];
+				for (var i = 0; i < fileList.length; i++) {
+					console.log(fileList.item(i).name)
+					dataImage[i] = {
+						ProductsId: $('#productid').val(),
+						UrlImage: fileList.item(i).name
+					};
+					//Save Value Image
+					saveValue(dataImage[i]);
+				}
+
+				//Update Product
+				var i = $('#typep option:selected').index();
+				console.log(i + 1);
+				//Radio
+				var colorValue = $("input[name='editList']:checked").val();
+				var sizeValue = $("input[name='sizeList']:checked").val();
+
+				var dataProduct = {
+					ProductId: $('#productid').val(),
+					Figure: $('#number').val(),
+					Description: $('#description').val(),
+					Material: $('#Material').val(),
+					Type: $('#Type').val(),
+					ColorId: colorValue,
+					Size: sizeValue,
+					Tittle: $('#Tittle').val(),
+					CoverPrice: $('#CoverPrice').val(),
+					OriginPrice: $('#OriginPrice').val(),
+					ColorId_old:  $('#color_old').val(),
+					Size_old: $('#size_old').val(),
+					Title_old: $('#title_old').val()
+				};
+				updateProduct(dataProduct);
+			}
+		} else {
+			alert("Fail Save Product");
+		}
+	});
+
+	function validate() {
+		var file = $('#form-upload')[0];
+		var data = new FormData(file);
+		var fileList = document.getElementById("upload").files;
+		var Id = $('#productid').val();
+		var number = $('#number').val();
+		var description = $('#description').val();
+		var Material = $('#Material').val();
+		var Type = $('#Type').val();
+		var Tittle = $('#Tittle').val();
+		var CoverPrice = $('#CoverPrice').val();
+		var OriginPrice = $('#OriginPrice').val();
+		var colorValue = $("input[name='editList']:checked").val();
+		var sizeValue = $("input[name='sizeList']:checked").val();
+		var sizeImage = $("#listImg > img").length;
+		if (Id === null || Id.length === 0 || Id === "null") {
+			alert("Incorrect Id");
+			return false;
+		}
+		if (number === null || number.length === 0 || number === "null") {
+			alert("Incorrect number");
+			return false;
+		}
+		if (description === null || description.length === 0 || description === "null") {
+			alert("Incorrect description");
+			return false;
+		}
+		if (Material === null || Material.length === 0 || Material === "null") {
+			alert("Incorrect Material");
+			return false;
+		}
+		if (Type === null || Type.length === 0 || Type === "null") {
+			alert("Incorrect Type");
+			return false;
+		}
+		if (Tittle === null || Tittle.length === 0 || Tittle === "null") {
+			alert("Incorrect Tittle");
+			return false;
+		}
+		if (CoverPrice === null || CoverPrice.length === 0 || CoverPrice === "null" || CoverPrice <= 0) {
+			alert("Incorrect CoverPrice");
+			return false;
+		}
+		if (OriginPrice === null || OriginPrice.length === 0 || OriginPrice === "null" || OriginPrice <= 0) {
+			alert("Incorrect OriginPrice");
+			return false;
+		}
+		if (colorValue === null || colorValue.length === 0 || colorValue === "null" || colorValue === -1) {
+			alert("Incorrect colorValue");
+			return false;
+		}
+		if (sizeValue === null || sizeValue.length === 0 || sizeValue === "null" || sizeValue === -1) {
+			alert("Incorrect sizeValue");
+			return false;
+		}
+		if(fileList.length === 0){
+			if(sizeImage ===0){
+				alert("Incorrect Image");
+				return false;
+			}
+		}
+		return true;
+	}
+
+	function deleteValue(ProductId){
 		$.ajax({
-			type : "POST",
-			enctype: 'multipart/form-data',
-			url : "https://localhost:8443/serverptit/api/upload/"+idImg,
-			data: data,
-			processData: false,
-		    contentType: false,
-		    cache: false,
-		    timeout: 1000000,
-			success : function(result){
-				update(idImg, IdP, name);
-				console.log("Save done");
+			type: "DELETE",
+			contentType: "application/json",
+			url: base_url + "product/saveValue",
+			data: JSON.stringify(ProductId),
+			dataType: "json",
+			success: function (result) {
+				console.log("DELETE Val 1");
 			},
-			error : function(event){
-				console.log("Save Fail");
+			error: function (event) {
+				console.log("DELETE Fail" + event);
 			}
 		});
-		
-	});
-	$('#btnBack').click(function(event) {
+	}
+	function saveValue(dataImage) {
+		$.ajax({
+			type: "POST",
+			contentType: "application/json",
+			url: base_url + "product/saveValue",
+			data: JSON.stringify(dataImage),
+			dataType: "json",
+			success: function (result) {
+				console.log("saveValue 1");
+			},
+			error: function (event) {
+				console.log("Save Fail" + event);
+			}
+		});
+	}
+
+	function updateProduct(dataProduct) {
+		$.ajax({
+			type: "PUT",
+			contentType: "application/json",
+			url: base_url + "product",
+			data: JSON.stringify(dataProduct),
+			dataType: "json",
+			success: function (result) {
+				console.log("saveProduct 1");
+				alert("Update success");
+				window.location.href = "../../product";
+			},
+			error: function (event) {
+				alert("Save Fail" + event);
+			}
+		});
+	}
+	$('#btnBack').click(function (event) {
 		event.preventDefault();
-		window.location.href = "https://localhost:8443/serverptit/admin/product";
+		window.location.href = "/admin/product";
 	});
 
+	//Option Product
 	loadOptionTypeProduct();
-	loadOptionManuFactory();
-	
-	function update(idImg, IdP, name) {
-			var img = {
-				id: $("#imageid").val(),
-				url : null,
-				filename : $('#picture').attr('src'),
-				product:{
-					id: $("#productid").val(),
-					material:$("#material").val() ,
-					name :$("#namep").val(),
-					price: $("#price").val(),
-					stock :$("#stock").val(),
-					description: $("#description").val(),
-					manufactory: {
-						id: $("#idmanufactory").val(),
-						name :$("#manufactory").val()
-		            },
-		            ct: {
-		            	id: $("#idct").val(),
-		            	name :$("#typep").val()
-		            },
+	function loadOptionTypeProduct() {		
+		$
+			.ajax({
+				type: "GET",
+				contentType: "application/json",
+				url: base_url + "category",
+				dataType: "json",
+				success: function (result) {
+					var html = "";
+					$.each(result, function (index, item) {
+						$('<option>', {
+							value: item.Name,
+						}).html(item.Name).appendTo("#typep");
+					})
+				
+					var index  = $('#idcategory').val() - 1 ;
+					$('#typep option:eq(' + index +')').attr("selected", "selected");
+				},
+				error: function (event) {
+					alert("Error Get Category");
 				}
-			};
-			$
-					.ajax({
-						type : "PUT",
-						contentType : "application/json",
-						url : "https://localhost:8443/serverptit/admin/product/api/update/"
-								+ idImg+"/"+IdP+"/"+name,
-						data : JSON.stringify(img),
-						dataType : "json",
-						success : function(result) {
-							alert("Edit success");
-							window.location.href = "https://localhost:8443/serverptit/admin/product";
-						},
-						error : function(event) {
-							alert("Edit fail");
-							console.log("Fail", event);
-						}
-					});
-		}
-	function loadOptionTypeProduct() {
-		var category = {
-			id: $("#id").val(),
-			name : $("#name").val(),
-		};
-		$
-				.ajax({
-					type : "GET",
-					contentType : "application/json",
-					url : "https://localhost:8443/serverptit/category/api/",
-					data : category,
-					dataType : "json",
-					success : function(result) {
-						var html = "";
-						 $.each(result,function(index, item) {
-									$('<option>',{
-								                   value: item.name,
-								               	}).html(item.name).appendTo("#typep");
-								})
-					},
-					error : function(event) {
-						alert("Error Get Category");
-					}
 
-				});
+			});
 	}
-	
-	function loadOptionManuFactory() {
-		var category = {
-			id: $("#id").val(),
-			name : $("#name").val(),
-		};
-		$
-				.ajax({
-					type : "GET",
-					contentType : "application/json",
-					url : "https://localhost:8443/serverptit/manufactory/api/",
-					data : category,
-					dataType : "json",
-					success : function(result) {
-						var html = "";
-						 $.each(result,function(index, item) {
-									$('<option>',{
-								                   value: item.name,
-								               	}).html(item.name).appendTo("#manufactory");
-								})
-					},
-					error : function(event) {
-						alert("Error Get Category");
-					}
-
-				});
-	}
-	$('#picture').click(function(event) {
-		$('#imagepreview').attr('src', $('#picture').attr('src')); 
-		   $('#imagemodal').modal('show'); 
-	});
-	
-	$('#file').change(function(event) {
-		readURL(this);
-	});
-	$('#manufactory').change(function() {
-		var i = $('#manufactory option:selected').index();
-          $('#idmanufactory').val(i+1);
-	});
-	
-	$('#typep').change(function() {
+	$('#typep').change(function () {
 		var i = $('#typep option:selected').index();
-          $('#idct').val(i+1);
+		$('#idcategory').val(i + 1);
+
+		var idK = $('#typep').val();
+	});
+	//Load Image
+	let imagesPreview = function (input, placeToInsertImagePreview) {
+		if (input.files) {
+			let filesAmount = input.files.length;
+			for (i = 0; i < filesAmount; i++) {
+				let reader = new FileReader();
+				reader.onload = function (event) {
+					$($.parseHTML("<img style='padding: 10px' width = 100px height=100px>"))
+						.attr("src", event.target.result)
+						.appendTo(placeToInsertImagePreview);
+				};
+				reader.readAsDataURL(input.files[i]);
+			}
+		}
+	};
+	$("#upload").on("change", function () {
+		$('div.preview-images').empty();
+		imagesPreview(this, "div.preview-images");
+		$('#listImg').hide();
 	});
 	
-	function readURL(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-
-            reader.onload = function (e) {
-                $('#picture')
-                    .attr('src', e.target.result)
-                    .width(150)
-                    .height(200);
-            };
-
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
 });
-

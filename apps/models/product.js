@@ -60,6 +60,272 @@ function log(arr) {
 
     }
 }
+
+ValueUrl.getPById = function(resultsQuery){
+	var products =[];
+	var arr1 = [];
+	for (var i = 0; i < resultsQuery.length; i++) {
+		arr1[i] = resultsQuery[i].pdId;
+	}
+	var k11 = convertToArr(resultsQuery, arr1);
+	//Tách ProductID
+	var result2 = "";
+	for (let index = 0; index < k11.length; index++) {
+		result2 += k11[index].result + ";";
+	}
+	result2 = result2.substring(0, result2.length - 1);
+	var item = result2.split(";");
+
+	var item2 = [];
+	for (let index = 0; index < item.length; index++) {
+		var x = item[index] + "";
+		x = x.substring(0, x.length - 1);
+		item2[index] = x.split(":");
+	}
+
+	// Bắt đầu detail product
+	//Color
+	var arr2 = [];
+	for (var i = 0; i < resultsQuery.length; i++) {
+		arr2[i] = resultsQuery[i].pdId + "//" + resultsQuery[i].TotalFigure + "//" + resultsQuery[i].Description + "//" + resultsQuery[i].Type +
+			"//" + resultsQuery[i].Size + "//" + resultsQuery[i].Tittle + "//" + resultsQuery[i].CoverPrice + "//" + resultsQuery[i].OriginPrice + "//" + resultsQuery[i].clId;
+	}
+	//Size
+	//K12
+	var k12 = convertToArr2(resultsQuery, arr2);
+
+	var keyy = [];
+	for (let h1 = 0; h1 < k12.length; h1++) {
+		var result_key = k12[h1].key1;
+
+		var result_key_split = result_key.split("//");
+
+		var result_value = k12[h1].result;
+		var result_value_split = result_value.split(":");
+
+		keyy.push({
+			"product_id": result_key_split[0],
+			"figure": result_key_split[1],
+			"description": result_key_split[2],
+			"size": result_key_split[4],
+			"indexQ": result_value_split[0]
+		});
+	}
+	//Convert
+	var arr2_1 = [];
+	for (var i = 0; i < keyy.length; i++) {
+		arr2_1[i] = keyy[i].product_id + ";" + keyy[i].size;
+	}
+	//Size
+	var element_obj1_1 = element_obj_f(arr2_1);
+	var k12_1 = [];
+	//K12_1
+	for (const [key, value] of Object.entries(element_obj1_1)) {
+		var result = "";
+		var figure = "";
+		var description = "";
+		var indexQ = "";
+
+		for (var i = 0; i < value.length; i++) {
+			result += value[i] + ":";
+			figure = keyy[value[i]].figure;
+			description = keyy[value[i]].description;
+			indexQ += keyy[value[i]].indexQ + ":";
+		}
+		k12_1.push({
+			key,
+			result,
+			figure,
+			description,
+			indexQ
+		});
+	}
+	// Kết thúc detail
+	//UrlImage, UrlVideo
+	var arr3 = [];
+
+	for (var i = 0; i < resultsQuery.length; i++) {
+		arr3[i] = resultsQuery[i].pdId + "//" + resultsQuery[i].vuId + "//" + resultsQuery[i].vuImage;
+	}
+	var element_obj_3 = element_obj_f(arr3);
+	var k1_3 = [];
+	//K13
+	for (const [key3, value3] of Object.entries(element_obj_3)) {
+		var result = "";
+		for (var i = 0; i < value3.length; i++) {
+			result = value3[i] + ":";
+		}
+		k1_3.push({
+			key3,
+			result
+		});
+	}
+	var urlImg = [];
+	for (let index = 0; index < k1_3.length; index++) {
+		var element = k1_3[index];
+		var result_key = element.key3;
+		var result_key_split = result_key.split("//");
+
+		urlImg.push({
+			"vuId": result_key_split[1],
+			"vuImage": result_key_split[2],
+			"vuVideo": null,
+			"product_id": result_key_split[0]
+		});
+	}
+
+	//Convert
+	var urlImg_1 = [];
+	for (var i = 0; i < urlImg.length; i++) {
+		urlImg_1[i] = urlImg[i].product_id;
+	}
+	//Size
+	var element_obj1_urlImg_1 = element_obj_f(urlImg_1);
+	var k_urlImg_1 = [];
+	//K12_1
+	for (const [key, value] of Object.entries(element_obj1_urlImg_1)) {
+		var vuId = "";
+		var vuImage = "";
+		// var description = "";
+		var indexQ = "";
+
+		for (var i = 0; i < value.length; i++) {
+			vuId += urlImg[value[i]].vuId + ":";
+			indexQ += value[i] + ":";
+			vuImage += urlImg[value[i]].vuImage + ":";
+		}
+		k_urlImg_1.push({
+			key,
+			vuId,
+			vuImage,
+			indexQ
+		});
+
+	}
+
+	var value = [];
+
+	//Split VuImage
+	var rvs = [];
+	var rvs_1 = [];
+	var value_1 = [];
+
+	for (let indexkk = 0; indexkk < k_urlImg_1.length; indexkk++) {
+		var arr_vuId = k_urlImg_1[indexkk].vuId;
+		arr_vuId = arr_vuId.substring(0, arr_vuId.length - 1);
+		rvs = arr_vuId.split(":");
+
+		var arr_vuImage = k_urlImg_1[indexkk].vuImage;
+		arr_vuId = arr_vuId.substring(0, arr_vuId.length - 1);
+		rvs_1 = arr_vuImage.split(":");
+
+		var value_1_1 = [];
+		for (let i1_1 = 0; i1_1 < rvs.length; i1_1++) {
+			var index1_1 = rvs[i1_1];
+			var index1_2 = rvs_1[i1_1];
+			value_1_1[i1_1] = {
+				"product_id": k_urlImg_1[indexkk].key,
+				"vuId": index1_1,
+				"vuImage": index1_2,
+				"vuVideo": null
+			}
+
+		}
+		value_1.push({
+			"product_id": k_urlImg_1[indexkk].key,
+			value_1_1
+		})
+	}
+
+	for (let index = 0; index < item2.length; index++) {
+
+		var result_value_split = [];
+		var detail_1 = [];
+
+		var itemID_2 = parseInt(item2[index]);
+
+		var k_2 = resultsQuery[itemID_2];
+
+		for (let i = 0; i < k12_1.length; i++) {
+			var result_value = k12_1[i].indexQ;
+
+			result_value = result_value.substring(0, result_value.length - 1);
+			result_value_split = result_value.split(":");
+
+			var color = [];
+			for (let i1 = 0; i1 < result_value_split.length; i1++) {
+				var index1 = result_value_split[i1];
+				var k_1 = resultsQuery[index1];
+				color[i1] = {
+					id: k_1.clId,
+					name: k_1.clName
+				}
+			}
+			var itemID_1_2 = parseInt(result_value);
+			var k_1_2 = resultsQuery[itemID_1_2];
+			var detail_product = {
+				product_id: k_1_2.pdId,
+				size: k_1_2.Size,
+				title: k_1_2.Tittle,
+				name: k_1_2.dpName,
+				cover_price: k_1_2.CoverPrice,
+				origin_price: k_1_2.OriginPrice,
+				figure: k_1_2.DpFigure,
+				color
+			};
+
+
+			detail_1.push(detail_product);
+		}
+
+
+		// Detail	
+		var detail = [];
+		for (let i = 0; i < k12_1.length; i++) {
+			if (k_2.pdId === detail_1[i].product_id) {
+				detail.push(detail_1[i]);
+			}
+		}
+
+		//Url
+		var count = 0;
+		for (let index_1 = 0; index_1 < value_1.length; index_1++) {
+			if (k_2.pdId === value_1[index_1].product_id) {
+				var length = value_1[index_1].value_1_1.length;
+				var xxx = [];
+				for (let index_1_1 = 0; index_1_1 < length; index_1_1++) {
+					var abc = value_1[index_1].value_1_1[index_1_1];
+					var abcd = {
+						"vuId": abc.vuId,
+						"vuImage": abc.vuImage,
+						"vuVideo": null
+					}
+					xxx.push(abcd);
+				}
+				value = xxx;
+				//	value=value_1[index_1].value_1_1;
+			}
+		}
+
+		var category = {
+			"id": k_2.ctId,
+			"name": k_2.ctName
+		}
+		var abc = {
+			product_id: k_2.pdId,
+			figure: k_2.TotalFigure,
+			description: k_2.Description,
+			rate: k_2.Rate,
+			material: k_2.Material,
+			type: k_2.Type,
+			detail,
+			category,
+			value
+		};
+		products.push(abc);
+	}
+	return products;
+}
 ValueUrl.getAll = function (req, res) {
     let sql = "SELECT distinct pd.Id as pdId, pd.Figure as TotalFigure, pd.Description," +
         " pd.Rate, pd.Material,pd.Type, dp.Size, dp.Tittle, dp.Name as dpName, dp.CoverPrice,dp.OriginPrice,dp.Figure as DpFirgure, " +
@@ -976,267 +1242,268 @@ ValueUrl.getProductCategory = function (req, res) {
                     if (resultsQuery.length === 0 || resultsQuery === null) {
                         products = [];
                     } else {
-                        var arr1 = [];
-                        for (var i = 0; i < resultsQuery.length; i++) {
-                            arr1[i] = resultsQuery[i].pdId;
-                        }
-                        var k11 = convertToArr(resultsQuery, arr1);
-                        //Tách ProductID
-                        var result2 = "";
-                        for (let index = 0; index < k11.length; index++) {
-                            result2 += k11[index].result + ";";
-                        }
-                        result2 = result2.substring(0, result2.length - 1);
-                        var item = result2.split(";");
+                       
+						var arr1 = [];
+						for (var i = 0; i < resultsQuery.length; i++) {
+							arr1[i] = resultsQuery[i].pdId;
+						}
+						var k11 = convertToArr(resultsQuery, arr1);
+						//Tách ProductID
+						var result2 = "";
+						for (let index = 0; index < k11.length; index++) {
+							result2 += k11[index].result + ";";
+						}
+						result2 = result2.substring(0, result2.length - 1);
+						var item = result2.split(";");
 
-                        var item2 = [];
-                        for (let index = 0; index < item.length; index++) {
-                            var x = item[index] + "";
-                            x = x.substring(0, x.length - 1);
-                            item2[index] = x.split(":");
-                        }
+						var item2 = [];
+						for (let index = 0; index < item.length; index++) {
+							var x = item[index] + "";
+							x = x.substring(0, x.length - 1);
+							item2[index] = x.split(":");
+						}
 
-                        // Bắt đầu detail product
-                        //Color
-                        var arr2 = [];
-                        for (var i = 0; i < resultsQuery.length; i++) {
-                            arr2[i] = resultsQuery[i].pdId + "//" + resultsQuery[i].TotalFigure + "//" + resultsQuery[i].Description + "//" + resultsQuery[i].Type +
-                                "//" + resultsQuery[i].Size + "//" + resultsQuery[i].Tittle + "//" + resultsQuery[i].CoverPrice + "//" + resultsQuery[i].OriginPrice + "//" + resultsQuery[i].clId;
-                        }
-                        //Size
-                        //K12
-                        var k12 = convertToArr2(resultsQuery, arr2);
+						// Bắt đầu detail product
+						//Color
+						var arr2 = [];
+						for (var i = 0; i < resultsQuery.length; i++) {
+							arr2[i] = resultsQuery[i].pdId + "//" + resultsQuery[i].TotalFigure + "//" + resultsQuery[i].Description + "//" + resultsQuery[i].Type +
+								"//" + resultsQuery[i].Size + "//" + resultsQuery[i].Tittle + "//" + resultsQuery[i].CoverPrice + "//" + resultsQuery[i].OriginPrice + "//" + resultsQuery[i].clId;
+						}
+						//Size
+						//K12
+						var k12 = convertToArr2(resultsQuery, arr2);
 
-                        var keyy = [];
-                        for (let h1 = 0; h1 < k12.length; h1++) {
-                            var result_key = k12[h1].key1;
+						var keyy = [];
+						for (let h1 = 0; h1 < k12.length; h1++) {
+							var result_key = k12[h1].key1;
 
-                            var result_key_split = result_key.split("//");
+							var result_key_split = result_key.split("//");
 
-                            var result_value = k12[h1].result;
-                            var result_value_split = result_value.split(":");
+							var result_value = k12[h1].result;
+							var result_value_split = result_value.split(":");
 
-                            keyy.push({
-                                "product_id": result_key_split[0],
-                                "figure": result_key_split[1],
-                                "description": result_key_split[2],
-                                "size": result_key_split[4],
-                                "indexQ": result_value_split[0]
-                            });
-                        }
-                        //Convert
-                        var arr2_1 = [];
-                        for (var i = 0; i < keyy.length; i++) {
-                            arr2_1[i] = keyy[i].product_id + ";" + keyy[i].size;
-                        }
-                        //Size
-                        var element_obj1_1 = element_obj_f(arr2_1);
-                        var k12_1 = [];
-                        //K12_1
-                        for (const [key, value] of Object.entries(element_obj1_1)) {
-                            var result = "";
-                            var figure = "";
-                            var description = "";
-                            var indexQ = "";
+							keyy.push({
+								"product_id": result_key_split[0],
+								"figure": result_key_split[1],
+								"description": result_key_split[2],
+								"size": result_key_split[4],
+								"indexQ": result_value_split[0]
+							});
+						}
+						//Convert
+						var arr2_1 = [];
+						for (var i = 0; i < keyy.length; i++) {
+							arr2_1[i] = keyy[i].product_id + ";" + keyy[i].size;
+						}
+						//Size
+						var element_obj1_1 = element_obj_f(arr2_1);
+						var k12_1 = [];
+						//K12_1
+						for (const [key, value] of Object.entries(element_obj1_1)) {
+							var result = "";
+							var figure = "";
+							var description = "";
+							var indexQ = "";
 
-                            for (var i = 0; i < value.length; i++) {
-                                result += value[i] + ":";
-                                figure = keyy[value[i]].figure;
-                                description = keyy[value[i]].description;
-                                indexQ += keyy[value[i]].indexQ + ":";
-                            }
-                            k12_1.push({
-                                key,
-                                result,
-                                figure,
-                                description,
-                                indexQ
-                            });
-                        }
-                        // Kết thúc detail
-                        //UrlImage, UrlVideo
-                        var arr3 = [];
+							for (var i = 0; i < value.length; i++) {
+								result += value[i] + ":";
+								figure = keyy[value[i]].figure;
+								description = keyy[value[i]].description;
+								indexQ += keyy[value[i]].indexQ + ":";
+							}
+							k12_1.push({
+								key,
+								result,
+								figure,
+								description,
+								indexQ
+							});
+						}
+						// Kết thúc detail
+						//UrlImage, UrlVideo
+						var arr3 = [];
 
-                        for (var i = 0; i < resultsQuery.length; i++) {
-                            arr3[i] = resultsQuery[i].pdId + "//" + resultsQuery[i].vuId + "//" + resultsQuery[i].vuImage;
-                        }
-                        var element_obj_3 = element_obj_f(arr3);
-                        var k1_3 = [];
-                        //K13
-                        for (const [key3, value3] of Object.entries(element_obj_3)) {
-                            var result = "";
-                            for (var i = 0; i < value3.length; i++) {
-                                result = value3[i] + ":";
-                            }
-                            k1_3.push({
-                                key3,
-                                result
-                            });
-                        }
-                        var urlImg = [];
-                        for (let index = 0; index < k1_3.length; index++) {
-                            var element = k1_3[index];
-                            var result_key = element.key3;
-                            var result_key_split = result_key.split("//");
+						for (var i = 0; i < resultsQuery.length; i++) {
+							arr3[i] = resultsQuery[i].pdId + "//" + resultsQuery[i].vuId + "//" + resultsQuery[i].vuImage;
+						}
+						var element_obj_3 = element_obj_f(arr3);
+						var k1_3 = [];
+						//K13
+						for (const [key3, value3] of Object.entries(element_obj_3)) {
+							var result = "";
+							for (var i = 0; i < value3.length; i++) {
+								result = value3[i] + ":";
+							}
+							k1_3.push({
+								key3,
+								result
+							});
+						}
+						var urlImg = [];
+						for (let index = 0; index < k1_3.length; index++) {
+							var element = k1_3[index];
+							var result_key = element.key3;
+							var result_key_split = result_key.split("//");
 
-                            urlImg.push({
-                                "vuId": result_key_split[1],
-                                "vuImage": result_key_split[2],
-                                "vuVideo": null,
-                                "product_id": result_key_split[0]
-                            });
-                        }
+							urlImg.push({
+								"vuId": result_key_split[1],
+								"vuImage": result_key_split[2],
+								"vuVideo": null,
+								"product_id": result_key_split[0]
+							});
+						}
 
-                        //Convert
-                        var urlImg_1 = [];
-                        for (var i = 0; i < urlImg.length; i++) {
-                            urlImg_1[i] = urlImg[i].product_id;
-                        }
-                        //Size
-                        var element_obj1_urlImg_1 = element_obj_f(urlImg_1);
-                        var k_urlImg_1 = [];
-                        //K12_1
-                        for (const [key, value] of Object.entries(element_obj1_urlImg_1)) {
-                            var vuId = "";
-                            var vuImage = "";
-                            // var description = "";
-                            var indexQ = "";
+						//Convert
+						var urlImg_1 = [];
+						for (var i = 0; i < urlImg.length; i++) {
+							urlImg_1[i] = urlImg[i].product_id;
+						}
+						//Size
+						var element_obj1_urlImg_1 = element_obj_f(urlImg_1);
+						var k_urlImg_1 = [];
+						//K12_1
+						for (const [key, value] of Object.entries(element_obj1_urlImg_1)) {
+							var vuId = "";
+							var vuImage = "";
+							// var description = "";
+							var indexQ = "";
 
-                            for (var i = 0; i < value.length; i++) {
-                                vuId += urlImg[value[i]].vuId + ":";
-                                indexQ += value[i] + ":";
-                                vuImage += urlImg[value[i]].vuImage + ":";
-                            }
-                            k_urlImg_1.push({
-                                key,
-                                vuId,
-                                vuImage,
-                                indexQ
-                            });
+							for (var i = 0; i < value.length; i++) {
+								vuId += urlImg[value[i]].vuId + ":";
+								indexQ += value[i] + ":";
+								vuImage += urlImg[value[i]].vuImage + ":";
+							}
+							k_urlImg_1.push({
+								key,
+								vuId,
+								vuImage,
+								indexQ
+							});
 
-                        }
+						}
 
-                        var value = [];
+						var value = [];
 
-                        //Split VuImage
-                        var rvs = [];
-                        var rvs_1 = [];
-                        var value_1 = [];
+						//Split VuImage
+						var rvs = [];
+						var rvs_1 = [];
+						var value_1 = [];
 
-                        for (let indexkk = 0; indexkk < k_urlImg_1.length; indexkk++) {
-                            var arr_vuId = k_urlImg_1[indexkk].vuId;
-                            arr_vuId = arr_vuId.substring(0, arr_vuId.length - 1);
-                            rvs = arr_vuId.split(":");
+						for (let indexkk = 0; indexkk < k_urlImg_1.length; indexkk++) {
+							var arr_vuId = k_urlImg_1[indexkk].vuId;
+							arr_vuId = arr_vuId.substring(0, arr_vuId.length - 1);
+							rvs = arr_vuId.split(":");
 
-                            var arr_vuImage = k_urlImg_1[indexkk].vuImage;
-                            arr_vuId = arr_vuId.substring(0, arr_vuId.length - 1);
-                            rvs_1 = arr_vuImage.split(":");
+							var arr_vuImage = k_urlImg_1[indexkk].vuImage;
+							arr_vuId = arr_vuId.substring(0, arr_vuId.length - 1);
+							rvs_1 = arr_vuImage.split(":");
 
-                            var value_1_1 = [];
-                            for (let i1_1 = 0; i1_1 < rvs.length; i1_1++) {
-                                var index1_1 = rvs[i1_1];
-                                var index1_2 = rvs_1[i1_1];
-                                value_1_1[i1_1] = {
-                                    "product_id": k_urlImg_1[indexkk].key,
-                                    "vuId": index1_1,
-                                    "vuImage": index1_2,
-                                    "vuVideo": null
-                                }
+							var value_1_1 = [];
+							for (let i1_1 = 0; i1_1 < rvs.length; i1_1++) {
+								var index1_1 = rvs[i1_1];
+								var index1_2 = rvs_1[i1_1];
+								value_1_1[i1_1] = {
+									"product_id": k_urlImg_1[indexkk].key,
+									"vuId": index1_1,
+									"vuImage": index1_2,
+									"vuVideo": null
+								}
 
-                            }
-                            value_1.push({
-                                "product_id": k_urlImg_1[indexkk].key,
-                                value_1_1
-                            })
-                        }
+							}
+							value_1.push({
+								"product_id": k_urlImg_1[indexkk].key,
+								value_1_1
+							})
+						}
 
-                        for (let index = 0; index < item2.length; index++) {
+						for (let index = 0; index < item2.length; index++) {
 
-                            var result_value_split = [];
-                            var detail_1 = [];
+							var result_value_split = [];
+							var detail_1 = [];
 
-                            var itemID_2 = parseInt(item2[index]);
+							var itemID_2 = parseInt(item2[index]);
 
-                            var k_2 = resultsQuery[itemID_2];
+							var k_2 = resultsQuery[itemID_2];
 
-                            for (let i = 0; i < k12_1.length; i++) {
-                                var result_value = k12_1[i].indexQ;
+							for (let i = 0; i < k12_1.length; i++) {
+								var result_value = k12_1[i].indexQ;
 
-                                result_value = result_value.substring(0, result_value.length - 1);
-                                result_value_split = result_value.split(":");
+								result_value = result_value.substring(0, result_value.length - 1);
+								result_value_split = result_value.split(":");
 
-                                var color = [];
-                                for (let i1 = 0; i1 < result_value_split.length; i1++) {
-                                    var index1 = result_value_split[i1];
-                                    var k_1 = resultsQuery[index1];
-                                    color[i1] = {
-                                        id: k_1.clId,
-                                        name: k_1.clName
-                                    }
-                                }
-                                var itemID_1_2 = parseInt(result_value);
-                                var k_1_2 = resultsQuery[itemID_1_2];
-                                var detail_product = {
-                                    product_id: k_1_2.pdId,
-                                    size: k_1_2.Size,
-                                    title: k_1_2.Tittle,
-                                    name: k_1_2.dpName,
-                                    cover_price: k_1_2.CoverPrice,
-                                    origin_price: k_1_2.OriginPrice,
-                                    figure: k_1_2.DpFigure,
-                                    color
-                                };
-
-
-                                detail_1.push(detail_product);
-                            }
+								var color = [];
+								for (let i1 = 0; i1 < result_value_split.length; i1++) {
+									var index1 = result_value_split[i1];
+									var k_1 = resultsQuery[index1];
+									color[i1] = {
+										id: k_1.clId,
+										name: k_1.clName
+									}
+								}
+								var itemID_1_2 = parseInt(result_value);
+								var k_1_2 = resultsQuery[itemID_1_2];
+								var detail_product = {
+									product_id: k_1_2.pdId,
+									size: k_1_2.Size,
+									title: k_1_2.Tittle,
+									name: k_1_2.dpName,
+									cover_price: k_1_2.CoverPrice,
+									origin_price: k_1_2.OriginPrice,
+									figure: k_1_2.DpFigure,
+									color
+								};
 
 
-                            // Detail	
-                            var detail = [];
-                            for (let i = 0; i < k12_1.length; i++) {
-                                if (k_2.pdId === detail_1[i].product_id) {
-                                    detail.push(detail_1[i]);
-                                }
-                            }
+								detail_1.push(detail_product);
+							}
 
-                            //Url
-                            var count = 0;
-                            for (let index_1 = 0; index_1 < value_1.length; index_1++) {
-                                if (k_2.pdId === value_1[index_1].product_id) {
-                                    var length = value_1[index_1].value_1_1.length;
-                                    var xxx = [];
-                                    for (let index_1_1 = 0; index_1_1 < length; index_1_1++) {
-                                        var abc = value_1[index_1].value_1_1[index_1_1];
-                                        var abcd = {
-                                            "vuId": abc.vuId,
-                                            "vuImage": abc.vuImage,
-                                            "vuVideo": null
-                                        }
-                                        xxx.push(abcd);
-                                    }
-                                    value = xxx;
-                                    //	value=value_1[index_1].value_1_1;
-                                }
-                            }
 
-                            var category = {
-                                "id": k_2.ctId,
-                                "name": k_2.ctName
-                            }
-                            var abc = {
-                                product_id: k_2.pdId,
-                                figure: k_2.TotalFigure,
-                                description: k_2.Description,
-                                rate: k_2.Rate,
-                                material: k_2.Material,
-                                type: k_2.Type,
-                                detail,
-                                category,
-                                value
-                            };
-                            products.push(abc);
-                        }
+							// Detail	
+							var detail = [];
+							for (let i = 0; i < k12_1.length; i++) {
+								if (k_2.pdId === detail_1[i].product_id) {
+									detail.push(detail_1[i]);
+								}
+							}
+
+							//Url
+							var count = 0;
+							for (let index_1 = 0; index_1 < value_1.length; index_1++) {
+								if (k_2.pdId === value_1[index_1].product_id) {
+									var length = value_1[index_1].value_1_1.length;
+									var xxx = [];
+									for (let index_1_1 = 0; index_1_1 < length; index_1_1++) {
+										var abc = value_1[index_1].value_1_1[index_1_1];
+										var abcd = {
+											"vuId": abc.vuId,
+											"vuImage": abc.vuImage,
+											"vuVideo": null
+										}
+										xxx.push(abcd);
+									}
+									value = xxx;
+									//	value=value_1[index_1].value_1_1;
+								}
+							}
+
+							var category = {
+								"id": k_2.ctId,
+								"name": k_2.ctName
+							}
+							var abc = {
+								product_id: k_2.pdId,
+								figure: k_2.TotalFigure,
+								description: k_2.Description,
+								rate: k_2.Rate,
+								material: k_2.Material,
+								type: k_2.Type,
+								detail,
+								category,
+								value
+							};
+							products.push(abc);
+						}
                     }
                     callback(null, products);
                 }
@@ -1846,16 +2113,76 @@ ValueUrl.getProductCategory = function (req, res) {
             }
         });
     },
-    ValueUrl.update = (req, res) => {
+    ValueUrl.updateProduct = (req, res) => {
         let data = req.body;
-        let productId = req.params.productId;
-        let sql = 'UPDATE products SET ? WHERE id = ?'
-        conn.query(sql, [data, productId], (err, response) => {
-            if (err) throw err
-            res.json({
-                message: 'Update success!'
+        var arrayOfFuncs = [];
+        //Get Id Customer
+        let sqlUpdateProduct = "UPDATE product SET Figure = ?, Description = ?, Material = ?, Type =? WHERE id = ? ";
+        var func_2 = function (callback) {
+            conn.query(sqlUpdateProduct,[data.Figure,data.Description,data.Material,data.Type,data.ProductId], (error, response) => {
+                if (error) {
+                    console.log('sqlUpdateProduct');
+                    callback(null, {
+                        "result": "null"
+                    });
+                } else {
+                    if (response.length === 0 || response === null) {
+                        callback(null, {
+                            "result": "null"
+                        });
+                    } else {                   
+                        var final1 = {
+                            "result": 'ok'
+                        };
+                        callback(null, final1);
+                    }
+
+                }
             })
-        })
+        }
+        arrayOfFuncs.push(func_2);
+		
+		let sqlUp2 = "UPDATE detailproduct SET ColorId = ?, Size = ?, Tittle = ?, Name =?, CoverPrice = ?, OriginPrice =? , Figure = ?  " +
+		" WHERE ProductId = ? AND ColorId = ? AND Size = ? AND Tittle = ?";
+        //Save 
+        var func_1 = function (prevData, callback) {
+            if (prevData.result !== "null") {
+                conn.query(sqlUp2, [data.ColorId, data.Size, data.Tittle, data.Tittle, data.CoverPrice, data.OriginPrice, data.Figure, data.ProductId,
+				data.ColorId_old, data.Size_old, data.Title_old], (error, response) => {
+                    if (error) {
+                        console.log(sqlUp2);
+                        callback(null, {
+                            "mes": "null"
+                        });
+                    } else {
+                        if (response.length === 0 || response === null) {
+							callback(null, {
+								"result": "null"
+							});
+						} else {                   
+							var final1 = {
+								"result": 'ok'
+							};
+							callback(null, final1);
+						}
+                        
+                    }
+                })
+            } else {
+                console.log("sqlUpdateProduct Fail");
+                callback(null, {
+                    "mes": "null"
+                });
+            }
+        }
+        arrayOfFuncs.push(func_1);
+        async.waterfall(arrayOfFuncs, function (errString, finalResult) {
+            if (errString) {
+                return res.send(errString);
+            } else {
+                return res.send(finalResult);
+            }
+        });
     },
     ValueUrl.saveProduct = (req, res) => {
         let data = req.body;
@@ -2074,5 +2401,17 @@ ValueUrl.getProductCategory = function (req, res) {
             })
         })
     },
-
+	ValueUrl.deleteValue = (req, res) => {
+        let productId = req.body.ProductId;
+        let sql = 'DELETE valueurl WHERE ProductsId = ?'
+        conn.query(sql, [productId], (err, response) => {
+            if (err) {
+                console.log('Del False')
+                throw err
+            }
+            res.json({
+                message: 'Delete success!'
+            })
+        })
+    }
     module.exports = ValueUrl;
