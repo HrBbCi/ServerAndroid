@@ -1,1 +1,1 @@
-EP0000;kienbtptit@gmail.com;admin;ava2.jpg;Bui Trung Kien
+EP0002;nv1@gmail.com;user;null;Nhan Vien 1

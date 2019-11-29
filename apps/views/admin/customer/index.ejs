@@ -2,18 +2,18 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Employee</title>
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <link rel="stylesheet" href="/static/resources/bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/static/resources/bower_components/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/static/resources/bower_components/Ionicons/css/ionicons.min.css">
-    <link rel="stylesheet" href="/static/resources/dist/css/AdminLTE.min.css">
-    <link rel="stylesheet" href="/static/resources/dist/css/skins/_all-skins.min.css">
-    <link rel="stylesheet" href="/static/resources/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Customer</title>
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="stylesheet" href="/static/resources/bower_components/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/static/resources/bower_components/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="/static/resources/bower_components/Ionicons/css/ionicons.min.css">
+        <link rel="stylesheet" href="/static/resources/dist/css/AdminLTE.min.css">
+        <link rel="stylesheet" href="/static/resources/dist/css/skins/_all-skins.min.css">
+        <link rel="stylesheet" href="/static/resources/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 
 </head>
 
@@ -22,38 +22,32 @@
         <%- include ../mainheader %>
         <%- include ../sidebar %>
         <div class="content-wrapper">
-
             <!-- Content Header (Page header) -->
             <section class="content-header">
-                <button id="btnAdd" class="btn btn-info">
-                    <i class="glyphicon glyphicon-plus-sign">New</i>
-                </button>
+                <h1>Customer</h1>
                 <ol class="breadcrumb">
                     <li><a href="/admin"><i class="fa fa-dashboard"></i>
                             Home</a></li>
-                    <li class="active">Manager Employee</li>
+                    <li class="active">Manager Customer</li>
                 </ol>
             </section>
             <!-- Main content -->
             <section class="content">
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title">Detail Employee</h3>
+                        <h3 class="box-title">Detail Customer</h3>
                     </div>
                     <div class="box-body">
                         <table id="example1" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Fullname</th>
-                                    <th>StartWork</th>
+                                    <th>Id</th>
                                     <th>Email</th>
+                                    <th>Fullname</th>
                                     <th>Phone</th>
-                                    <th>Salary</th>
                                     <th>Image</th>
-                                    <th>Status</th>
-									<th>Edit</th>
-									<th>Delete</th>
+                                    <th>Location</th>
+                                   
                                 </tr>
                             </thead>
                             <tbody id="tbodyContent">
@@ -81,8 +75,9 @@
     <script src="/static/resources/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="/static/resources/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
     <script src="/static/resources/dist/js/demo.js"></script>
+
+    <script src="/static/js/app/customer.js"></script>
     <script src="/static/js/app/home.js"></script>
-    <script src="/static/js/app/employee.js"></script>
 </body>
 
 </html>

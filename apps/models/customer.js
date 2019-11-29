@@ -336,4 +336,11 @@ module.exports = {
             }
         });
     },
+	listIDCustomer: (req, res) =>{
+		let sql = 'SELECT * FROM customer'
+        conn.query(sql, (err, response) => {
+            if (err) throw err
+            res.json(response)
+        })
+	}
 }

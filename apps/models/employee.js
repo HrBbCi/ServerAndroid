@@ -25,9 +25,10 @@ function generateIdEmployee(string) {
 	}
 	return result;
 }
+
 module.exports = {
 	getAll: (req, res) => {
-		let sql = 'SELECT employee.*, ae.password FROM employee, accountemployee as ae where status  = 1 and ae.Username = employee.Email '
+		let sql = 'SELECT employee.*, ae.password FROM employee, accountemployee as ae where ae.Username = employee.Email '
 		var arrayOfFuncs = [];
 		var func_sql = function (callback) {
 			conn.query(sql, (error, response) => {
@@ -56,6 +57,7 @@ module.exports = {
 								"District": response[i].District,
 								"City": response[i].City,
 								"Password": response[i].password,
+								"Status" : response[i].Status
 							});
 						}
 					}
@@ -73,13 +75,102 @@ module.exports = {
 			}
 		});
 	},
+	getEmplById: (req, res) => {
+		let sql = 'SELECT employee.*, ae.password FROM employee, accountemployee as ae where ae.Username = employee.Email AND employee.Id  = ? '
+		var arrayOfFuncs = [];
+		var func_sql = function (callback) {
+			conn.query(sql, [req.params.Id],(error, response) => {
+				if (error) {
+					console.log('error');
+					callback(error, null);
+				} else {
+					var mes = [];
+					if (response == null || response.length == 0) {
+						mes =[];
+					} else {
+						for(let i = 0 ; i<response.length;i++){
+							mes.push({
+								"Id": response[i].Id,
+								"Fullname": response[i].Fullname,
+								"StartWork": response[i].StartWork,
+								"Email": response[i].Email,
+								"Role": response[i].Role,
+								"Phone": response[i].Phone,
+								"Phone": response[i].Phone,
+								"Salary": response[i].Salary,
+								"Salary": response[i].Salary,
+								"Image": response[i].Image,
+								"NumApartment": response[i].NumApartment,
+								"Ward": response[i].Ward,
+								"District": response[i].District,
+								"City": response[i].City,
+								"Password": response[i].password,
+								"Status" : response[i].Status
+							});
+						}
+					}
+					callback(null, mes);
+				}
+			})
+		}
+		arrayOfFuncs.push(func_sql);
+		async.waterfall(arrayOfFuncs, function (errString, finalResult) {
+			if (errString) {
+				return res.send(errString);
+			} else {
+				return res.send(finalResult);
+			}
+		});
+	},
 	getIdEmpl: (req, res) => {
-		let sql = 'SELECT * FROM employee where status  = 1 and email = ?'
+		let sql = 'SELECT * FROM employee where email = ?'
 		conn.query(sql, [req.params.Id],(err, response) => {
 			if (err) throw err
 			res.json(response)
 		})
 	},
+	getEmailEmpl: (req, res) => {
+		let sql = 'SELECT * FROM employee where  Id = ?'
+		conn.query(sql, [req.params.Id],(err, response) => {
+			if (err) throw err
+			res.json(response)
+		})
+	},
+	getLastestId : (req, res) => {
+        let sqlCheck = 'SELECT * FROM employee ORDER BY ID DESC LIMIT 1 '
+        var arrayOfFuncs = [];
+        var func_sqlCheck = function (callback) {
+            conn.query(sqlCheck,  (error, response) => {
+                if (error) {
+                    console.log('error');
+                    callback(error, null);
+                } else {
+                    var mes = {};
+
+                    if (response == null || response.length == 0) {
+                        mes = {
+                            'mes': 'null'
+                        };
+                    } else {
+                        mes = {
+                            'mes': response[0].Id
+                        };
+                    }
+
+                    callback(null, mes);
+                }
+            })
+        }
+        arrayOfFuncs.push(func_sqlCheck);
+
+        async.waterfall(arrayOfFuncs, function (errString, finalResult) {
+            if (errString) {
+                return res.send(errString);
+            } else {
+                return res.send(finalResult);
+            }
+        });
+    },
 	checkAccount: (req, res) => {
 		let data = req.body;
 		let sql = 'SELECT password FROM accountemployee where username = ?';
@@ -119,10 +210,18 @@ module.exports = {
 							"mes": "null"
 						});
 					} else {
-						var mes1 = {
-							'mes': response[0].Role
-						};
-						callback(null, mes1);
+						if (response[0] == null) {
+							callback(null, {
+								"mes": "null"
+							});
+						}else{
+							console.log(response[0])
+							var mes = {
+								'mes': response[0].Role
+							};
+							callback(null, mes);
+						}
+						
 					}
 				})
 			} else {
@@ -195,7 +294,7 @@ module.exports = {
 		arrayOfFuncs.push(func_1);
 
 		//Get Id Employee
-		let sqlIdEmpl = "SELECT * FROM Employee ORDER BY ID DESC LIMIT 1";
+		let sqlIdEmpl = "SELECT * FROM Employee where status = 1 ORDER BY ID DESC LIMIT 1";
 		var func_2 = function (prevData, callback) {
 			if (prevData.mes !== "null") {
 				conn.query(sqlIdEmpl, (error, response) => {
@@ -267,10 +366,9 @@ module.exports = {
 		})
 	},
 	updateInfo: (req, res) => {
-
 		let data = req.body;
 		var arrayOfFuncs = [];
-		let sqlAcc = 'SELECT Role FROM employee where status  = 1 AND Email = ?';
+		let sqlAcc = 'SELECT Role FROM employee where  Email = ?';
 		var func_1 = function (callback) {
 			conn.query(sqlAcc, data.Username, (error, response) => {
 				if (error) {
@@ -279,7 +377,7 @@ module.exports = {
 						"mes": "null"
 					});
 				} else {
-					var mes1 = {
+					var mes = {
 						'mes': response[0].Role
 					};
 					callback(null, mes);
@@ -336,14 +434,100 @@ module.exports = {
 			}
 		});
 	},
-	delete: (req, res) => {
+	updateEmployee: (req, res) => {
 		let data = req.body;
-		let sql = 'UPDATE accountemployee SET Enabled =  0 WHERE Username = ?'
-		conn.query(sql, [data.Username], (err, response) => {
-			if (err) throw err
-			res.json({
-				message: 'ok'
+		var arrayOfFuncs = [];
+
+		var func_2 = function (callback) {
+			let sql_2 = "UPDATE accountemployee SET Username = ? WHERE Username = ?";
+			conn.query(sql_2, [data.Email, data.Email], (err, response) => {
+				if (err) {
+					console.log(sql_2);
+					callback(null, {
+						"mes": "null"
+					});
+				} else {
+					var mes = {
+						'mes': 'Ok'
+					};
+					callback(null, mes);
+				}
 			})
-		})
+		}
+		arrayOfFuncs.push(func_2);
+		
+		var func_3 = function (prevData,callback) {
+			let sqlll = "UPDATE employee SET AccountUn = ? , Fullname = ?, StartWork =? , Email = ?, Role = ?,Phone = ?,Salary=?, " +
+				"Image=?, NumApartment=?, Ward=?, District=?, City=? WHERE  Email = ?";
+			conn.query(sqlll, [data.Email, data.Fullname, data.StartWork, data.Email, data.Role, data.Phone, data.Salary,
+				data.Image, data.NumApartment, data.Ward, data.District, data.City, data.Email], (err, response) => {
+				if (err) {
+					console.log(sqlll);
+					callback(null, {
+						"mes": "null"
+					});
+				} else {
+					var mes = {
+						'mes': 'Ok'
+					};
+					callback(null, mes);
+				}
+			})
+		}
+		arrayOfFuncs.push(func_3);
+		async.waterfall(arrayOfFuncs, function (errString, finalResult) {
+			if (errString) {
+				return res.send(errString);
+			} else {
+				return res.send(finalResult);
+			}
+		});
+	},
+	deleteEmpl: (req, res) => {
+		let data = req.body;
+		console.log(data.Username+";;"+data)
+		var arrayOfFuncs = [];
+		let sqldeleteEmpl = 'UPDATE accountemployee SET Enabled =  ? WHERE Username = ? ';
+		var func_1 = function (callback) {
+			conn.query(sqldeleteEmpl, [data.Enabled,data.Username], (error, response) => {
+				if (error) {
+					console.log('sqldeleteEmpl' +error);
+					callback(null, {
+						"mes": "null"
+					});
+				} else {
+					var mes = {
+						'mes': 'ok'
+					};
+					callback(null, mes);
+				}
+			})
+		}
+		arrayOfFuncs.push(func_1);
+		var func_2 = function (prevData, callback) {
+			let sql_2 = "UPDATE employee SET Status = ? WHERE Email = ?";
+			conn.query(sql_2, [data.Enabled,data.Username], (err, response) => {
+				if (err) {
+					console.log(sql_2);
+					callback(null, {
+						"mes": "null"
+					});
+				} else {
+					var mes = {
+						'mes': 'Ok'
+					};
+					callback(null, mes);
+				}
+			})
+		}
+		arrayOfFuncs.push(func_2);
+
+		async.waterfall(arrayOfFuncs, function (errString, finalResult) {
+			if (errString) {
+				return res.send(errString);
+			} else {
+				return res.send(finalResult);
+			}
+		});
 	}
 }

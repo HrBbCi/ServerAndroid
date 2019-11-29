@@ -317,5 +317,5 @@ module.exports = {
                 message: 'Delete success!'
             })
         })
-    },
+    }
 }

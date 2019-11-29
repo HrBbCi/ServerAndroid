@@ -20,8 +20,8 @@ module.exports = function (app) {
         .post(multipleUploadController.multipleUpload);
 
 	//Test
-    app.route('/api/test/:CustomerId/:statusId')
-        .get(testCtrl.getOrderByCusIdAndStIdV2);
+    app.route('/api/test')
+        .put(testCtrl.deleteEmpl);
 		
     // todoList Category
     app.route('/api/category')
@@ -37,6 +37,10 @@ module.exports = function (app) {
         .get(customerCtrl.getDetailCustomer)
         .delete(customerCtrl.removeAddress);
 
+	app.route('/api/customer/listID')
+        .get(customerCtrl.listIDCustomer);
+        
+		
     app.route('/api/new/address')
         .post(customerCtrl.saveAddress);
 		
@@ -156,7 +160,10 @@ module.exports = function (app) {
 	//Notify
     app.route('/api/notify')
         .get(notiCtrl.getAll)
-        .post(notiCtrl.saveNoti);
+        .post(notiCtrl.saveNoti)
+		.put(notiCtrl.updateNoti)
+		.delete(notiCtrl.deleteNotify)
+		;
 		
     app.route('/api/notify/:CustomerId')
         .get(notiCtrl.getNotiByIdCustomer);
@@ -164,13 +171,25 @@ module.exports = function (app) {
 	//Employee
     app.route('/api/employee')
         .get(emplCtrl.getAll)
-        .post(emplCtrl.save);
+        .post(emplCtrl.save)
+		.put(emplCtrl.deleteEmpl);
+	app.route('/api/employee/update2')
+		.put(emplCtrl.updateEmployee);
+
 		
     app.route('/api/employee/check')
         .post(emplCtrl.checkAccount);
 		
+	app.route('/api/employee/findLast')
+        .get(emplCtrl.getLastestId);
+		
     app.route('/api/employee/:Id')
         .get(emplCtrl.getIdEmpl);
+	app.route('/api/employee/findEmail/:Id')
+        .get(emplCtrl.getEmailEmpl);
+		
+	app.route('/api/employee/findEmpl/:Id')
+        .get(emplCtrl.getEmplById);
 	
 	//Read write
     app.route('/api/read')

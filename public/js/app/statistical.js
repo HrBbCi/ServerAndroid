@@ -17,7 +17,7 @@ $(document)
                                 .each(
                                     result,
                                     function (index, item) {
-                                        console.log(item);
+                                      
                                         html += "<tr>";
                                         html += "<td>" +
                                             (index + 1) +

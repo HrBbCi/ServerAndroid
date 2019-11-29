@@ -13,7 +13,7 @@ $(document)
                     url: base_url + "read",
                     dataType: "json",
                     success: function (result) {
-                        console.log(result);
+                       
                         var res = result.data.split(";");
 						if(res[3].length ===0||res[3]===null|| res[3] ==="null"){
 							res[3] = "icon_avatar.png";
@@ -30,7 +30,6 @@ $(document)
                         } else {
                             user(res[0], res[1]);
                         }
-                        $("#emplid").val(res[0]);
 
                     },
                     error: function (event) {
@@ -61,90 +60,81 @@ $(document)
                 event.preventDefault();
 
                 if (validate()) {
-                    var file = $('#form-upload')[0];
-                    var data = new FormData(file);
-                    var fileList = document.getElementById("upload").files;
-
-                    //Save Image to Server
-                    $.ajax({
-                        type: "POST",
-                        enctype: 'multipart/form-data',
-                        url: "http://localhost:3000/multiple-upload",
-                        data: data,
-                        processData: false,
-                        contentType: false,
-                        cache: false,
-                        timeout: 1000000,
-                        success: function (result) {
-                            console.log("Save done");
-                        },
-                        error: function (event) {
-                            alert("Save Fail");
-                        }
-                    });
-                    var image_news = fileList.item(0).name;
-
+                    var TypeO = $('#typep').val();
                     //Get Date now
                     var d = new Date();
                     var datestring = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2) +
                         " " + ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2) + ":" + ("0" + d.getSeconds()).slice(-2);
-                    var news = {
-                        emplID: $("#emplid").val(),
-                        title: $("#Tittle").val(),
-                        description: $('#description').val(),
-                        dateRelease: datestring,
-                        image: image_news,
-                        link: $('#Link').val()
+                    var notify = {
+                        CustomerId: $("#CustomerId").val(),
+                        Notify: $("#Notify").val(),
+                        TypeO: TypeO,
+                        Date: datestring
                     };
-                    console.log(news);
-                    addNews(news);
+
+                    addNotify(notify);
 
                 } else {
-                    alert("Fail Save News");
+                    alert("Fail Save Notify");
                 }
             });
 
-            function validate() {
-                var file = $('#form-upload')[0];
-                var data = new FormData(file);
-                var fileList = document.getElementById("upload").files;
-
-                var description = $('#description').val();
-                var Link = $('#Link').val();
-                var Tittle = $('#Tittle').val();
-                if (description === null || description.length === 0 || description === "null") {
-                    alert("Incorrect description");
+            function validate() {               
+                var Notify = $('#Notify').val();
+                // var Date = $('#Date').val();
+               
+                if (Notify === null || Notify.length === 0 || Notify === "null") {
+                    alert("Incorrect Notify");
                     return false;
                 }
-                if (Link === null || Link.length === 0 || Link === "null") {
-                    alert("Incorrect Link");
-                    return false;
-                }
-                if (Tittle === null || Tittle.length === 0 || Tittle === "null") {
-                    alert("Incorrect Tittle");
-                    return false;
-                }
-                if (fileList.length === 0) {
-                    alert("Incorrect Image");
-                    return false;
-                }
+                // if (Date === null || Date.length === 0 || Date === "null") {
+                    // alert("Incorrect Date");
+                    // return false;
+                // }
+                
                 return true;
             }
+			loadOption();
 
-            function addNews(news) {
+			function loadOption() {
+
+				$
+					.ajax({
+						type: "GET",
+						contentType: "application/json",
+						url: base_url + "customer/listID",
+						dataType: "json",
+						success: function (result) {
+							var html = "";
+							$("#typep").append('<option value="All" selected="true">All</option>');
+							$.each(result, function (index, item) {
+								$('<option>', {
+									value: item.Id,
+								}).html(item.Id).appendTo("#typep");
+							})
+						},
+						error: function (event) {
+							alert("Error Get Category");
+						}
+
+					});
+
+			}
+
+            function addNotify(notify) {
                 $.ajax({
                     type: "POST",
                     contentType: "application/json",
-                    url: base_url + "news",
-                    data: JSON.stringify(news),
+                    url: base_url + "notify",
+                    data: JSON.stringify(notify),
                     dataType: "json",
                     success: function (result) {
                         alert("Add Success")
-                        var xy = confirm("Are you sure that you want to add news?");
+                        var xy = confirm("Are you sure that you want to add notify?");
                         if (xy) {
                             return false;
                         } else {
-                            window.location.href = "../news";
+                            window.location.href = "../notification";
                         }
                     },
                     error: function (event) {

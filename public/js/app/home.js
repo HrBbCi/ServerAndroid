@@ -10,6 +10,9 @@ $(document).ready(function () {
             dataType: "json",
             success: function (result) {
                 var res = result.data.split(";");
+				if(res[3].length ===0||res[3]===null|| res[3] ==="null"){
+					res[3] = "icon_avatar.png";
+				}
                 $("#avatar_1").attr("src",base_url_image + res[3]);
                 $("#avatar_2").attr("src",base_url_image + res[3]);
                 $("#avatar_3").attr("src",base_url_image + res[3]);
